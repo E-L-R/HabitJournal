@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "451356668633",
+    "project_id": "habitjournalprojectfirebase",
+    "storage_bucket": "habitjournalprojectfirebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451356668633:android:ad761a8e17e543820c44c8",
+        "android_client_info": {
+          "package_name": "com.example.firebase_auth_flutterfire_ui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451356668633-o4g511na1f22bbsimmpnaqv0rp89gjb3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuOEirE_XYVbtD7e_Ij7My3yjtwIQp5V8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451356668633-o4g511na1f22bbsimmpnaqv0rp89gjb3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "451356668633-0c21fharlpqdqkqkalkrr8srf1qaba82.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebaseAuthFlutterfireUi"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451356668633:android:512a2566ee68acd60c44c8",
+        "android_client_info": {
+          "package_name": "com.example.habit_journal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451356668633-o4g511na1f22bbsimmpnaqv0rp89gjb3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuOEirE_XYVbtD7e_Ij7My3yjtwIQp5V8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451356668633-o4g511na1f22bbsimmpnaqv0rp89gjb3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "451356668633-0c21fharlpqdqkqkalkrr8srf1qaba82.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebaseAuthFlutterfireUi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
