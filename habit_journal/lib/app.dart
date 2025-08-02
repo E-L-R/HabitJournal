@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'auth_gate.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.clientId});
+class Application extends StatelessWidget {
+  const Application({super.key, required this.clientId});
 
   final String clientId;
 
@@ -15,7 +15,6 @@ class MyApp extends StatelessWidget {
       ),
       home: AuthGate(clientId: clientId),
       debugShowCheckedModeBanner: false,
-
     );
   }
 }
