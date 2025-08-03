@@ -41,50 +41,48 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDdC17ShAarczQvjsqlpHLLoqEJjZG1lxM',
-    appId: '1:451356668633:web:260f6e6d757d1dec0c44c8',
-    messagingSenderId: '451356668633',
-    projectId: 'habitjournalprojectfirebase',
-    authDomain: 'habitjournalprojectfirebase.firebaseapp.com',
-    storageBucket: 'habitjournalprojectfirebase.firebasestorage.app',
-    measurementId: 'G-DYZPF5EXYY',
+    apiKey: 'AIzaSyDTln0auFrTna5CBeCwUUBhmpwNSDU-eCQ',
+    appId: '1:683164694019:web:54e05b9ed86ee4b7004036',
+    messagingSenderId: '683164694019',
+    projectId: 'project-habit-journal',
+    authDomain: 'project-habit-journal.firebaseapp.com',
+    storageBucket: 'project-habit-journal.firebasestorage.app',
+    measurementId: 'G-89KE51KQSK',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDuOEirE_XYVbtD7e_Ij7My3yjtwIQp5V8',
-    appId: '1:451356668633:android:ad761a8e17e543820c44c8',
-    messagingSenderId: '451356668633',
-    projectId: 'habitjournalprojectfirebase',
-    storageBucket: 'habitjournalprojectfirebase.firebasestorage.app',
+    apiKey: 'AIzaSyAn64yRI8pqWrE9Datu0QyghIts33tfx1A',
+    appId: '1:683164694019:android:5c0ce6bacf10809f004036',
+    messagingSenderId: '683164694019',
+    projectId: 'project-habit-journal',
+    storageBucket: 'project-habit-journal.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyChDhqm9RCK0qGIH8pEGqRttN_lxd-Xxdo',
-    appId: '1:451356668633:ios:2f958acd657ed8210c44c8',
-    messagingSenderId: '451356668633',
-    projectId: 'habitjournalprojectfirebase',
-    storageBucket: 'habitjournalprojectfirebase.firebasestorage.app',
-    iosClientId: '451356668633-0c21fharlpqdqkqkalkrr8srf1qaba82.apps.googleusercontent.com',
-    iosBundleId: 'com.example.firebaseAuthFlutterfireUi',
+    apiKey: 'AIzaSyALul6bQhbCryPI1lZhAWbT92jQSkAotU4',
+    appId: '1:683164694019:ios:c300904c9dfe1897004036',
+    messagingSenderId: '683164694019',
+    projectId: 'project-habit-journal',
+    storageBucket: 'project-habit-journal.firebasestorage.app',
+    iosBundleId: 'com.example.habitJournal',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyChDhqm9RCK0qGIH8pEGqRttN_lxd-Xxdo',
-    appId: '1:451356668633:ios:2f958acd657ed8210c44c8',
-    messagingSenderId: '451356668633',
-    projectId: 'habitjournalprojectfirebase',
-    storageBucket: 'habitjournalprojectfirebase.firebasestorage.app',
-    iosClientId: '451356668633-0c21fharlpqdqkqkalkrr8srf1qaba82.apps.googleusercontent.com',
-    iosBundleId: 'com.example.firebaseAuthFlutterfireUi',
+    apiKey: 'AIzaSyALul6bQhbCryPI1lZhAWbT92jQSkAotU4',
+    appId: '1:683164694019:ios:c300904c9dfe1897004036',
+    messagingSenderId: '683164694019',
+    projectId: 'project-habit-journal',
+    storageBucket: 'project-habit-journal.firebasestorage.app',
+    iosBundleId: 'com.example.habitJournal',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDdC17ShAarczQvjsqlpHLLoqEJjZG1lxM',
-    appId: '1:451356668633:web:260f6e6d757d1dec0c44c8',
-    messagingSenderId: '451356668633',
-    projectId: 'habitjournalprojectfirebase',
-    authDomain: 'habitjournalprojectfirebase.firebaseapp.com',
-    storageBucket: 'habitjournalprojectfirebase.firebasestorage.app',
-    measurementId: 'G-DYZPF5EXYY',
+    apiKey: 'AIzaSyDTln0auFrTna5CBeCwUUBhmpwNSDU-eCQ',
+    appId: '1:683164694019:web:2580636dbbe16237004036',
+    messagingSenderId: '683164694019',
+    projectId: 'project-habit-journal',
+    authDomain: 'project-habit-journal.firebaseapp.com',
+    storageBucket: 'project-habit-journal.firebasestorage.app',
+    measurementId: 'G-8RM5X2CB2B',
   );
 }

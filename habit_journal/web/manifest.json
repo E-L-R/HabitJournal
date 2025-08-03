@@ -1,6 +1,6 @@
 {
-    "name": "firebase_auth_flutterfire_ui",
-    "short_name": "firebase_auth_flutterfire_ui",
+    "name": "habit_journal",
+    "short_name": "habit_journal",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

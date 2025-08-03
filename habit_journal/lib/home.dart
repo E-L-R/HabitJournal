@@ -1,6 +1,6 @@
-import 'package:firebase_auth_flutterfire_ui/habits_page.dart';
-import 'package:firebase_auth_flutterfire_ui/journal_page.dart';
 import 'package:flutter/material.dart';
+import 'package:habit_journal/habits_page.dart';
+import 'package:habit_journal/journal_page.dart';
 
 class BottomNavigationWidget extends StatefulWidget {
   const BottomNavigationWidget({super.key});

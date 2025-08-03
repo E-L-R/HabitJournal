@@ -1,4 +1,4 @@
-package com.example.firebase_auth_flutterfire_ui
+package com.example.habit_journal
 
 import io.flutter.embedding.android.FlutterActivity
 

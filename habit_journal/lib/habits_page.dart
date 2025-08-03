@@ -1,6 +1,7 @@
-import 'package:firebase_auth_flutterfire_ui/menu_drawer.dart';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:habit_journal/menu_drawer.dart';
 
 class HabitsPage extends StatelessWidget {
   const HabitsPage({super.key});

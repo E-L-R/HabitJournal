@@ -1,5 +1,5 @@
-import 'package:firebase_auth_flutterfire_ui/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:habit_journal/theme.dart';
 
 import 'auth_gate.dart';
 
@@ -12,7 +12,7 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: lightMode,
-      darkTheme: darkMode,
+      // darkTheme: darkMode,
       // theme: ThemeData(
       //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       // ),
