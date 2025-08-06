@@ -41,7 +41,7 @@ class HabitsPage extends StatelessWidget {
                         padding: const EdgeInsets.all(2),
                         child: AspectRatio(
                           aspectRatio: 1,
-                          child: Image.asset('assets/flutterfire_300x.png'),
+                          child: Icon(Icons.one_x_mobiledata),
                         ),
                       ),
                     ],
@@ -56,7 +56,7 @@ class HabitsPage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            SizedBox(width: 250, child: Image.asset('assets/dash.png')),
+            SizedBox(width: 250, child: Icon(Icons.one_x_mobiledata)),
             Text('Habits', style: Theme.of(context).textTheme.displaySmall),
             const SignOutButton(),
           ],
