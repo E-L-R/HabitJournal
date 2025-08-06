@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:habit_journal/menu_drawer.dart';
@@ -35,16 +34,7 @@ class HabitsPage extends StatelessWidget {
                         Navigator.of(context).pop();
                       }),
                     ],
-                    children: [
-                      const Divider(),
-                      Padding(
-                        padding: const EdgeInsets.all(2),
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Icon(Icons.one_x_mobiledata),
-                        ),
-                      ),
-                    ],
+                    children: [const Divider()],
                   ),
                 ),
               );
@@ -56,9 +46,7 @@ class HabitsPage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            SizedBox(width: 250, child: Icon(Icons.one_x_mobiledata)),
             Text('Habits', style: Theme.of(context).textTheme.displaySmall),
-            const SignOutButton(),
           ],
         ),
       ),

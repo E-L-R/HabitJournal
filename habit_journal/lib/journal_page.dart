@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:habit_journal/menu_drawer.dart';
 import 'package:habit_journal/services/firestore.dart';
+import 'package:intl/intl.dart';
 
 class JournalPage extends StatefulWidget {
   const JournalPage({super.key});
@@ -20,41 +21,92 @@ final TextEditingController textController = TextEditingController();
 
 class _JournalPageState extends State<JournalPage> {
   // open a dialog box to add a note
-  void openNoteBox({String? doID}) {
+  void openNoteBox({String? doID, String? existingNote}) {
+    // If we are editing, pre-fill the text field
+    if (existingNote != null) {
+      textController.text = existingNote;
+    }
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: TextField(controller: textController),
+        title: Text(doID == null ? 'Add Note' : 'Edit Note'),
+        content: SizedBox(
+          // Give the text field a larger, fixed size.
+          height: 250,
+          width: MediaQuery.of(context).size.width,
+          child: TextField(
+            controller: textController,
+            autofocus: true,
+            maxLines: null, // Required for expands to work.
+            expands: true, // Makes the TextField fill the SizedBox.
+            keyboardType: TextInputType.multiline,
+            textAlignVertical: TextAlignVertical.top, // Aligns text to the top.
+            decoration: const InputDecoration(
+              hintText: 'Enter your journal entry...',
+              border: OutlineInputBorder(),
+              alignLabelWithHint: true,
+            ),
+          ),
+        ),
         actions: [
+          // button to cancel
+          TextButton(
+            onPressed: () {
+              // Just close the dialog box
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
+          ),
           // button to save
           ElevatedButton(
             onPressed: () {
               // add a new note
               if (doID == null) {
                 firestoreService.addNote(textController.text);
-              }
-              // update an existing note
-              else {
+              } else {
+                // update an existing note
                 firestoreService.updateNote(doID, textController.text);
               }
-              // clear the text controller
-              textController.clear();
               // close the dialog box
               Navigator.pop(context);
             },
-            child: Text('save'),
+            child: const Text('Save'),
           ),
+        ],
+      ),
+    ).then((_) {
+      // Ensure the controller is cleared when the dialog is closed
+      textController.clear();
+    });
+  }
 
+  // show a dialog box to confirm note deletion
+  void _showDeleteConfirmationDialog(String docID) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Note'),
+        content: const Text(
+          'Are you sure you want to delete this note? This action cannot be undone.',
+        ),
+        actions: [
+          // button to cancel
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          // button to delete
           ElevatedButton(
             onPressed: () {
-              // cancel
-
-              // clear the text controller
-              textController.clear();
-              // close the dialog box
+              firestoreService.deleteNote(docID);
               Navigator.pop(context);
             },
-            child: Text('cancel'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            child: const Text('Delete'),
           ),
         ],
       ),
@@ -92,13 +144,7 @@ class _JournalPageState extends State<JournalPage> {
                     ],
                     children: [
                       const Divider(),
-                      Padding(
-                        padding: const EdgeInsets.all(2),
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Icon(Icons.one_x_mobiledata),
-                        ),
-                      ),
+                      
                     ],
                   ),
                 ),
@@ -109,7 +155,9 @@ class _JournalPageState extends State<JournalPage> {
         automaticallyImplyLeading: false,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: firestoreService.getNotesStream(FirebaseAuth.instance.currentUser!.uid),
+        stream: firestoreService.getNotesStream(
+          FirebaseAuth.instance.currentUser!.uid,
+        ),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List notesList = snapshot.data!.docs;
@@ -125,32 +173,65 @@ class _JournalPageState extends State<JournalPage> {
                 Map<String, dynamic> data =
                     document.data() as Map<String, dynamic>;
                 String noteText = data['note'];
-                String noteTime = data['timestamp'].toString();
+                String noteTime;
+                if (data['timestamp'] != null) {
+                  Timestamp timestamp = data['timestamp'] as Timestamp;
+                  DateTime dateTime = timestamp.toDate();
+                  noteTime = DateFormat.yMMMd().add_jm().format(dateTime);
+                } else {
+                  noteTime = 'No date';
+                }
 
                 // display as a list tile
-                return Padding(
-                  padding: const EdgeInsets.all(150.0),
-                  child: ListTile(
-                  
-                    title: Text(noteText),
-                    subtitle: Text(noteTime),
-                    trailing: Card(
-                      color: Colors.amber,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // update button
-                          IconButton(
-                            onPressed: () => openNoteBox(doID: docID),
-                            icon: Icon(Icons.settings),
-                          ),
-                          // delete button
-                          IconButton(
-                            onPressed: () => firestoreService.deleteNote(docID),
-                            icon: Icon(Icons.delete),
-                          ),
-                        ],
-                      ),
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  elevation: 4.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          noteText,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(
+                          noteTime,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: Colors.grey[600]),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            // update button
+                            IconButton(
+                              onPressed: () => openNoteBox(
+                                doID: docID,
+                                existingNote: noteText,
+                              ),
+                              icon: Icon(
+                                Icons.edit_outlined,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            // delete button
+                            IconButton(
+                              onPressed: () => _showDeleteConfirmationDialog(docID),
+                              icon: Icon(
+                                Icons.delete_outline,
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -159,7 +240,12 @@ class _JournalPageState extends State<JournalPage> {
           }
           //if there is no data return
           else {
-            return const Text('No notes..');
+            return const Center(
+              child: Text(
+                'No notes yet. Tap the + button to add one!',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            );
           }
         },
       ),
