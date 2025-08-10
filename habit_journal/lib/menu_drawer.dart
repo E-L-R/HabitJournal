@@ -13,7 +13,7 @@ class HabitJournalMenuDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
+            decoration: BoxDecoration(color: Colors.pink),
             child: Text(
               'Habit Journal',
               style: TextStyle(color: Colors.white, fontSize: 24),

@@ -118,6 +118,8 @@ class _JournalPageState extends State<JournalPage> {
     return Scaffold(
       drawer: HabitJournalMenuDrawer(),
       appBar: AppBar(
+        backgroundColor: Colors.pink,
+        title: const Text('Journal'),
         leading: Builder(
           builder: (context) {
             return IconButton(
@@ -142,10 +144,7 @@ class _JournalPageState extends State<JournalPage> {
                         Navigator.of(context).pop();
                       }),
                     ],
-                    children: [
-                      const Divider(),
-                      
-                    ],
+                    children: [const Divider()],
                   ),
                 ),
               );
@@ -223,7 +222,8 @@ class _JournalPageState extends State<JournalPage> {
                             ),
                             // delete button
                             IconButton(
-                              onPressed: () => _showDeleteConfirmationDialog(docID),
+                              onPressed: () =>
+                                  _showDeleteConfirmationDialog(docID),
                               icon: Icon(
                                 Icons.delete_outline,
                                 color: Theme.of(context).colorScheme.error,

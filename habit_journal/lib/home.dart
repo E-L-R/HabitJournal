@@ -9,7 +9,6 @@ class BottomNavigationWidget extends StatefulWidget {
   State<BottomNavigationWidget> createState() => _BottomNavigationWidgetState();
 }
 
-
 class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
   int currentPageIndex = 0;
 
@@ -31,10 +30,7 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
             icon: Icon(Icons.checklist),
             label: 'Habits',
           ),
-          NavigationDestination(
-            icon: Icon(Icons.note),
-            label: 'Journal',
-          ),
+          NavigationDestination(icon: Icon(Icons.note), label: 'Journal'),
         ],
       ),
       body: <Widget>[

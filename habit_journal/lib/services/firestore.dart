@@ -8,19 +8,21 @@ class FirestoreService {
   }
 
   // get collection of users
-  CollectionReference get users => FirebaseFirestore.instance.collection('users');
+  CollectionReference get users =>
+      FirebaseFirestore.instance.collection('users');
 
   // get collection of notes
-  CollectionReference userNotesCollection(String userId) => FirebaseFirestore.instance.collection('notes/$userId/userNotes');
+  CollectionReference userNotesCollection(String userId) =>
+      FirebaseFirestore.instance.collection('notes/$userId/userNotes');
 
   // CREATE: add a new note
   Future<void> addNote(String note) async {
     try {
       await userNotesCollection(getCurrentUserUid()).add({
-      'note': note,
-      'timestamp': FieldValue.serverTimestamp(),
-      // 'userId': getCurrentUserUid(), // Include the user ID in the document
-    });
+        'note': note,
+        'timestamp': FieldValue.serverTimestamp(),
+        // 'userId': getCurrentUserUid(), Include the user ID in the document
+      });
     } catch (e) {
       print(e);
     }
@@ -28,9 +30,9 @@ class FirestoreService {
 
   // READ: get notes from database
   Stream<QuerySnapshot> getNotesStream(String userId) {
-    final notesStream = userNotesCollection(userId)
-    .orderBy('timestamp', descending: true)
-    .snapshots();
+    final notesStream = userNotesCollection(
+      userId,
+    ).orderBy('timestamp', descending: true).snapshots();
     return notesStream;
   }
 
@@ -48,7 +50,6 @@ class FirestoreService {
   // DELETE: delete notes given a doc id
   Future<void> deleteNote(String docID) {
     String userId = getCurrentUserUid();
-
     return userNotesCollection(userId).doc(docID).delete();
   }
 }
