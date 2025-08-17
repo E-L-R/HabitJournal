@@ -3,8 +3,7 @@ import 'package:habit_journal/models/habit.dart';
 import 'package:habit_journal/models/habit_completion.dart';
 import 'package:intl/intl.dart';
 import 'package:habit_journal/services/database_service.dart'; // Ensure DatabaseHelper path is correct
-// You'll need to create the `database_helper.dart` file with the content from the "sqflite_tables" Canvas.
-// And `note.dart` and `habit.dart` (which now includes HabitCompletion) in a `models` directory.
+import 'package:habit_journal/habit_detail_page.dart'; // Import the new detail page
 
 // Database helper instance
 final DatabaseHelper dbHelper = DatabaseHelper.instance;
@@ -48,11 +47,7 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
 
   // Helper to get the start of the day in UTC milliseconds
   int _getStartOfDayTimestamp(DateTime dateTime) {
-    return DateTime.utc(
-      dateTime.year,
-      dateTime.month,
-      dateTime.day,
-    ).millisecondsSinceEpoch;
+    return DateTime.utc(dateTime.year, dateTime.month, dateTime.day).millisecondsSinceEpoch;
   }
 
   // --- Habit Management Dialogs ---
@@ -84,15 +79,11 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
               TextField(
                 controller: _goalAmountController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Daily Goal Amount',
-                ),
+                decoration: const InputDecoration(labelText: 'Daily Goal Amount'),
               ),
               TextField(
                 controller: _unitController,
-                decoration: const InputDecoration(
-                  labelText: 'Unit (e.g., "liters", "pages")',
-                ),
+                decoration: const InputDecoration(labelText: 'Unit (e.g., "liters", "pages")'),
               ),
               // You might add frequency selection here, but for simplicity, we'll keep it static for now
               // For 'frequency', we'll hardcode 'daily' or add a default.
@@ -117,8 +108,7 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
               }
 
               final String name = _habitNameController.text;
-              final double goalAmount =
-                  double.tryParse(_goalAmountController.text) ?? 0.0;
+              final double goalAmount = double.tryParse(_goalAmountController.text) ?? 0.0;
               final String unit = _unitController.text;
 
               if (existingHabit == null) {
@@ -158,9 +148,7 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Habit'),
-        content: const Text(
-          'Are you sure you want to delete this habit and all its logged completions?',
-        ),
+        content: const Text('Are you sure you want to delete this habit and all its logged completions?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -188,11 +176,9 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
   // Open dialog to log completion for a specific day
   void _openLogCompletionDialog(Habit habit, DateTime date) async {
     final int dateTimestamp = _getStartOfDayTimestamp(date);
-    HabitCompletion? existingCompletion = await dbHelper
-        .getHabitCompletionForDate(habit.id!, date);
+    HabitCompletion? existingCompletion = await dbHelper.getHabitCompletionForDate(habit.id!, date);
 
-    final TextEditingController loggedAmountController =
-        TextEditingController();
+    final TextEditingController loggedAmountController = TextEditingController();
     if (existingCompletion != null) {
       loggedAmountController.text = existingCompletion.loggedAmount.toString();
     }
@@ -221,8 +207,7 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
           ),
           ElevatedButton(
             onPressed: () async {
-              final double loggedAmount =
-                  double.tryParse(loggedAmountController.text) ?? 0.0;
+              final double loggedAmount = double.tryParse(loggedAmountController.text) ?? 0.0;
               await dbHelper.logHabitCompletion(
                 habitId: habit.id!,
                 loggedAmount: loggedAmount,
@@ -246,8 +231,7 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text('Habit Tracker'),
-        automaticallyImplyLeading:
-            false, // You might want to remove this if you have a drawer
+        automaticallyImplyLeading: false, // You might want to remove this if you have a drawer
       ),
       body: FutureBuilder<List<Habit>>(
         future: _habitsFuture,
@@ -270,7 +254,19 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
               itemCount: habits.length,
               itemBuilder: (context, index) {
                 final habit = habits[index];
-                return _buildHabitCard(habit);
+                return GestureDetector( // Added GestureDetector for navigation
+                  onTap: () async {
+                    // Navigate to the detail page and await for it to pop
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HabitDetailPage(habit: habit),
+                      ),
+                    );
+                    _refreshHabits(); // Refresh habits on this page when returning from detail page
+                  },
+                  child: _buildHabitCard(habit),
+                );
               },
             );
           }
@@ -300,35 +296,35 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
                 Expanded(
                   child: Text(
                     habit.name,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.edit, color: Colors.blueGrey),
-                  onPressed: () => _openHabitDialog(existingHabit: habit),
+                  onPressed: () {
+                    // Stop tap propagation to avoid navigating when editing
+                    _openHabitDialog(existingHabit: habit);
+                  },
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.redAccent),
-                  onPressed: () => _confirmDeleteHabit(habit.id!),
+                  onPressed: () {
+                    // Stop tap propagation to avoid navigating when deleting
+                    _confirmDeleteHabit(habit.id!);
+                  },
                 ),
               ],
             ),
             const SizedBox(height: 8.0),
             Text(
               'Goal: ${habit.goalAmount.toStringAsFixed(0)} ${habit.unit} daily',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: Colors.grey[700]),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey[700]),
             ),
             const Divider(height: 20, thickness: 1),
             // Display the last 7 days for logging
             Text(
               'Last 7 Days:',
-              style: Theme.of(
-                context,
-              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
             FutureBuilder<List<HabitCompletion>>(
@@ -341,15 +337,13 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
                 } else {
                   // Map completions by date for efficient lookup
                   final Map<int, HabitCompletion> completionsMap = {
-                    for (var c in snapshot.data!) c.date: c,
+                    for (var c in snapshot.data!) c.date: c
                   };
 
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: List.generate(7, (index) {
-                      final date = DateTime.now().subtract(
-                        Duration(days: 6 - index),
-                      );
+                      final date = DateTime.now().subtract(Duration(days: 6 - index));
                       final startOfDayTimestamp = _getStartOfDayTimestamp(date);
                       final completion = completionsMap[startOfDayTimestamp];
 
@@ -357,34 +351,27 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
                       String indicatorText;
 
                       if (completion != null) {
-                        indicatorColor = completion.isSuccess
-                            ? Colors.green
-                            : Colors.red;
-                        indicatorText = completion.loggedAmount.toStringAsFixed(
-                          0,
-                        ); // Display logged amount
+                        indicatorColor = completion.isSuccess ? Colors.green.shade600 : Colors.red.shade600;
+                        indicatorText = completion.loggedAmount.toStringAsFixed(0); // Display logged amount
                       } else {
-                        indicatorColor = Colors.grey[300]!;
+                        indicatorColor = Colors.grey.shade300;
                         indicatorText = 'N/A'; // No completion logged
                       }
 
                       return GestureDetector(
-                        onTap: () => _openLogCompletionDialog(habit, date),
+                        onTap: () {
+                          // Allow logging from the main page too, but don't navigate
+                          _openLogCompletionDialog(habit, date);
+                        },
                         child: Column(
                           children: [
                             Text(
                               DateFormat('EEE').format(date), // Mon, Tue etc.
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
-                              ),
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
                             ),
                             Text(
                               DateFormat('MMM d').format(date), // Aug 17, etc.
-                              style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.grey,
-                              ),
+                              style: const TextStyle(fontSize: 10, color: Colors.grey),
                             ),
                             const SizedBox(height: 4),
                             Container(
@@ -399,11 +386,7 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
                                 child: Text(
                                   indicatorText,
                                   style: TextStyle(
-                                    color:
-                                        (completion != null &&
-                                            completion.isSuccess)
-                                        ? Colors.white
-                                        : Colors.black,
+                                    color: (completion != null && completion.isSuccess) ? Colors.white : Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
