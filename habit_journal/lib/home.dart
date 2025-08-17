@@ -35,7 +35,7 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
       ),
       body: <Widget>[
         /// Habits page
-        HabitsPage(),
+        HabitTrackerPage(),
 
         /// JournalPage page
         JournalPage(),

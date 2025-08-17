@@ -1,10 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:habit_journal/menu_drawer.dart';
-import 'package:habit_journal/services/firestore.dart';
 import 'package:intl/intl.dart';
+// Import your DatabaseHelper and Note model
+import 'package:habit_journal/models/note.dart'; // Assuming this path for your Note model
+import 'package:habit_journal/services/database_service.dart'; // Assuming this path for your DatabaseHelper
+
+// Note: You would typically pass the DatabaseHelper instance or use a service locator
+// For simplicity in this example, we'll use the singleton instance directly.
 
 class JournalPage extends StatefulWidget {
   const JournalPage({super.key});
@@ -13,24 +14,42 @@ class JournalPage extends StatefulWidget {
   State<JournalPage> createState() => _JournalPageState();
 }
 
-// Firestore
-final FirestoreService firestoreService = FirestoreService();
+// Database helper instance
+final DatabaseHelper dbHelper = DatabaseHelper.instance;
 
 // text controller
 final TextEditingController textController = TextEditingController();
 
 class _JournalPageState extends State<JournalPage> {
+  // A future to hold notes, to be used with FutureBuilder
+  late Future<List<Note>> _notesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshNotes(); // Load notes when the widget initializes
+  }
+
+  // Method to refresh the list of notes
+  void _refreshNotes() {
+    setState(() {
+      _notesFuture = dbHelper.getNotes();
+    });
+  }
+
   // open a dialog box to add a note
-  void openNoteBox({String? doID, String? existingNote}) {
+  void openNoteBox({Note? existingNote}) {
     // If we are editing, pre-fill the text field
     if (existingNote != null) {
-      textController.text = existingNote;
+      textController.text = existingNote.content ?? ''; // Use content field
+    } else {
+      textController.clear(); // Clear for new notes
     }
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(doID == null ? 'Add Note' : 'Edit Note'),
+        title: Text(existingNote == null ? 'Add Note' : 'Edit Note'),
         content: SizedBox(
           // Give the text field a larger, fixed size.
           height: 250,
@@ -53,21 +72,30 @@ class _JournalPageState extends State<JournalPage> {
           // button to cancel
           TextButton(
             onPressed: () {
-              // Just close the dialog box
               Navigator.pop(context);
             },
             child: const Text('Cancel'),
           ),
           // button to save
           ElevatedButton(
-            onPressed: () {
-              // add a new note
-              if (doID == null) {
-                firestoreService.addNote(textController.text);
+            onPressed: () async {
+              if (existingNote == null) {
+                // Add a new note
+                final newNote = Note(
+                  title: textController.text.split('\n').first.trim(), // Use first line as title or default
+                  content: textController.text,
+                  timestamp: DateTime.now().millisecondsSinceEpoch,
+                );
+                await dbHelper.insertNote(newNote);
               } else {
-                // update an existing note
-                firestoreService.updateNote(doID, textController.text);
+                // Update an existing note
+                existingNote.content = textController.text;
+                existingNote.title = textController.text.split('\n').first.trim(); // Update title
+                existingNote.timestamp = DateTime.now().millisecondsSinceEpoch; // Update timestamp on edit
+                await dbHelper.updateNote(existingNote);
               }
+              // Refresh the notes list
+              _refreshNotes();
               // close the dialog box
               Navigator.pop(context);
             },
@@ -82,7 +110,7 @@ class _JournalPageState extends State<JournalPage> {
   }
 
   // show a dialog box to confirm note deletion
-  void _showDeleteConfirmationDialog(String docID) {
+  void _showDeleteConfirmationDialog(int noteId) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -98,8 +126,9 @@ class _JournalPageState extends State<JournalPage> {
           ),
           // button to delete
           ElevatedButton(
-            onPressed: () {
-              firestoreService.deleteNote(docID);
+            onPressed: () async {
+              await dbHelper.deleteNote(noteId);
+              _refreshNotes(); // Refresh the notes list
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
@@ -115,73 +144,73 @@ class _JournalPageState extends State<JournalPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Note: Removed Firebase imports and FirebaseUIAuth dependencies
+    // You'll need to handle authentication separately if you still require it
+    // and are moving away from Firebase Auth for other parts of your app.
+    // The MenuDrawer and ProfileScreen imports are commented out as they rely on external files.
+
     return Scaffold(
-      drawer: HabitJournalMenuDrawer(),
+      // drawer: HabitJournalMenuDrawer(), // Commented out due to external dependency
       appBar: AppBar(
         backgroundColor: Colors.pink,
         title: const Text('Journal'),
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute<ProfileScreen>(
-                  builder: (context) => ProfileScreen(
-                    appBar: AppBar(title: const Text('User Profile')),
-                    actions: [
-                      SignedOutAction((context) {
-                        Navigator.of(context).pop();
-                      }),
-                    ],
-                    children: [const Divider()],
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
+        // leading: Builder( // Commented out due to external dependency
+        //   builder: (context) {
+        //     return IconButton(
+        //       icon: const Icon(Icons.menu),
+        //       onPressed: () {
+        //         Scaffold.of(context).openDrawer();
+        //       },
+        //     );
+        //   },
+        // ),
+        // actions: [ // Commented out due to external dependency
+        //   IconButton(
+        //     icon: const Icon(Icons.person),
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute<ProfileScreen>(
+        //           builder: (context) => ProfileScreen(
+        //             appBar: AppBar(title: const Text('User Profile')),
+        //             actions: [
+        //               SignedOutAction((context) {
+        //                 Navigator.of(context).pop();
+        //               }),
+        //             ],
+        //             children: [const Divider()],
+        //           ),
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // ],
         automaticallyImplyLeading: false,
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: firestoreService.getNotesStream(
-          FirebaseAuth.instance.currentUser!.uid,
-        ),
+      body: FutureBuilder<List<Note>>(
+        future: _notesFuture, // Use the Future from SQFlite
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List notesList = snapshot.data!.docs;
-            // display as a list
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text(
+                'No notes yet. Tap the + button to add one!',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            );
+          } else {
+            List<Note> notesList = snapshot.data!;
             return ListView.builder(
               itemCount: notesList.length,
               itemBuilder: (context, index) {
-                // get each individual doc
-                DocumentSnapshot document = notesList[index];
-                String docID = document.id;
+                Note note = notesList[index]; // Get Note object directly
 
-                // get note from each doc
-                Map<String, dynamic> data =
-                    document.data() as Map<String, dynamic>;
-                String noteText = data['note'];
-                String noteTime;
-                if (data['timestamp'] != null) {
-                  Timestamp timestamp = data['timestamp'] as Timestamp;
-                  DateTime dateTime = timestamp.toDate();
-                  noteTime = DateFormat.yMMMd().add_jm().format(dateTime);
-                } else {
-                  noteTime = 'No date';
-                }
+                String noteTime = DateFormat.yMMMd().add_jm().format(
+                    DateTime.fromMillisecondsSinceEpoch(note.timestamp));
 
-                // display as a list tile
                 return Card(
                   margin: const EdgeInsets.symmetric(
                     horizontal: 16.0,
@@ -197,8 +226,13 @@ class _JournalPageState extends State<JournalPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          noteText,
+                          note.title, // Use note.title
                           style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(
+                          note.content ?? '', // Use note.content
+                          style: Theme.of(context).textTheme.bodyMedium, // Changed from bodySmall for better readability
                         ),
                         const SizedBox(height: 8.0),
                         Text(
@@ -212,8 +246,7 @@ class _JournalPageState extends State<JournalPage> {
                             // update button
                             IconButton(
                               onPressed: () => openNoteBox(
-                                doID: docID,
-                                existingNote: noteText,
+                                existingNote: note, // Pass the Note object
                               ),
                               icon: Icon(
                                 Icons.edit_outlined,
@@ -223,7 +256,7 @@ class _JournalPageState extends State<JournalPage> {
                             // delete button
                             IconButton(
                               onPressed: () =>
-                                  _showDeleteConfirmationDialog(docID),
+                                  _showDeleteConfirmationDialog(note.id!), // Pass note.id
                               icon: Icon(
                                 Icons.delete_outline,
                                 color: Theme.of(context).colorScheme.error,
@@ -238,19 +271,10 @@ class _JournalPageState extends State<JournalPage> {
               },
             );
           }
-          //if there is no data return
-          else {
-            return const Center(
-              child: Text(
-                'No notes yet. Tap the + button to add one!',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-            );
-          }
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: openNoteBox,
+        onPressed: () => openNoteBox(),
         child: const Icon(Icons.add),
       ),
     );
