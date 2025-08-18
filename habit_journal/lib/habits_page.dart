@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:habit_journal/create_habit_page.dart';
 import 'package:habit_journal/models/habit.dart';
 import 'package:habit_journal/models/habit_completion.dart';
 import 'package:intl/intl.dart';
-import 'package:habit_journal/services/database_service.dart'; // Ensure DatabaseHelper path is correct
-import 'package:habit_journal/habit_detail_page.dart'; // Import the new detail page
+import 'package:habit_journal/services/database_service.dart';
+import 'package:habit_journal/habit_detail_page.dart';
 
-// Database helper instance
 final DatabaseHelper dbHelper = DatabaseHelper.instance;
 
 class HabitTrackerPage extends StatefulWidget {
@@ -16,18 +16,20 @@ class HabitTrackerPage extends StatefulWidget {
 }
 
 class _HabitTrackerPageState extends State<HabitTrackerPage> {
-  // A future to hold habits, to be used with FutureBuilder
   late Future<List<Habit>> _habitsFuture;
 
-  // Text editing controllers for habit dialog
+  // Controllers for habit dialog
   final TextEditingController _habitNameController = TextEditingController();
   final TextEditingController _goalAmountController = TextEditingController();
   final TextEditingController _unitController = TextEditingController();
 
+  // State variable for the habit type
+  bool _isBinaryHabit = false;
+
   @override
   void initState() {
     super.initState();
-    _refreshHabits(); // Load habits when the widget initializes
+    _refreshHabits();
   }
 
   @override
@@ -38,111 +40,143 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
     super.dispose();
   }
 
-  // Method to refresh the list of habits
   void _refreshHabits() {
     setState(() {
       _habitsFuture = dbHelper.getHabits();
     });
   }
 
-  // Helper to get the start of the day in UTC milliseconds
   int _getStartOfDayTimestamp(DateTime dateTime) {
     return DateTime.utc(dateTime.year, dateTime.month, dateTime.day).millisecondsSinceEpoch;
   }
 
   // --- Habit Management Dialogs ---
 
-  // Open a dialog box to add/edit a habit
   void _openHabitDialog({Habit? existingHabit}) {
     if (existingHabit != null) {
       _habitNameController.text = existingHabit.name;
-      _goalAmountController.text = existingHabit.goalAmount.toString();
-      _unitController.text = existingHabit.unit;
+      _isBinaryHabit = existingHabit.isBinary; // Set the state based on existing habit
+      if (!existingHabit.isBinary) {
+        _goalAmountController.text = existingHabit.goalAmount?.toString() ?? '';
+        _unitController.text = existingHabit.unit ?? '';
+      } else {
+        _goalAmountController.clear();
+        _unitController.clear();
+      }
     } else {
       _habitNameController.clear();
       _goalAmountController.clear();
       _unitController.clear();
+      _isBinaryHabit = false; // Default to unit-based for new habits
     }
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(existingHabit == null ? 'Add New Habit' : 'Edit Habit'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _habitNameController,
-                decoration: const InputDecoration(labelText: 'Habit Name'),
+      builder: (context) => StatefulBuilder( // Use StatefulBuilder to update the dialog's state
+        builder: (BuildContext context, StateSetter setState) {
+          return AlertDialog(
+            title: Text(existingHabit == null ? 'Add New Habit' : 'Edit Habit'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _habitNameController,
+                    decoration: const InputDecoration(labelText: 'Habit Name'),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const Text('Habit Type:'),
+                      const Spacer(),
+                      ElevatedButton.icon(
+                        onPressed: () => setState(() => _isBinaryHabit = false),
+                        icon: const Icon(Icons.numbers),
+                        label: const Text('Unit-Based'),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: _isBinaryHabit ? null : Colors.white,
+                          backgroundColor: _isBinaryHabit ? null : Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: () => setState(() => _isBinaryHabit = true),
+                        icon: const Icon(Icons.check),
+                        label: const Text('Yes/No'),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: !_isBinaryHabit ? null : Colors.white,
+                          backgroundColor: !_isBinaryHabit ? null : Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (!_isBinaryHabit) ...[
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _goalAmountController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(labelText: 'Daily Goal Amount'),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _unitController,
+                      decoration: const InputDecoration(labelText: 'Unit (e.g., "liters", "pages")'),
+                    ),
+                  ],
+                ],
               ),
-              TextField(
-                controller: _goalAmountController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Daily Goal Amount'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
               ),
-              TextField(
-                controller: _unitController,
-                decoration: const InputDecoration(labelText: 'Unit (e.g., "liters", "pages")'),
+              ElevatedButton(
+                onPressed: () async {
+                  if (_habitNameController.text.isEmpty ||
+                      (!_isBinaryHabit && (_goalAmountController.text.isEmpty || _unitController.text.isEmpty))) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please fill all fields')),
+                    );
+                    return;
+                  }
+
+                  final String name = _habitNameController.text;
+                  final double? goalAmount = _isBinaryHabit ? null : double.tryParse(_goalAmountController.text);
+                  final String? unit = _isBinaryHabit ? null : _unitController.text;
+
+                  if (existingHabit == null) {
+                    final newHabit = Habit(
+                      name: name,
+                      frequency: 'daily',
+                      goalAmount: goalAmount,
+                      unit: unit,
+                      isBinary: _isBinaryHabit,
+                      lastChecked: DateTime.now().millisecondsSinceEpoch,
+                    );
+                    await dbHelper.insertHabit(newHabit);
+                  } else {
+                    existingHabit.name = name;
+                    existingHabit.goalAmount = goalAmount;
+                    existingHabit.unit = unit;
+                    existingHabit.isBinary = _isBinaryHabit;
+                    await dbHelper.updateHabit(existingHabit);
+                  }
+                  _refreshHabits();
+                  Navigator.pop(context);
+                },
+                child: const Text('Save'),
               ),
-              // You might add frequency selection here, but for simplicity, we'll keep it static for now
-              // For 'frequency', we'll hardcode 'daily' or add a default.
             ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (_habitNameController.text.isEmpty ||
-                  _goalAmountController.text.isEmpty ||
-                  _unitController.text.isEmpty) {
-                // Basic validation
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please fill all fields')),
-                );
-                return;
-              }
-
-              final String name = _habitNameController.text;
-              final double goalAmount = double.tryParse(_goalAmountController.text) ?? 0.0;
-              final String unit = _unitController.text;
-
-              if (existingHabit == null) {
-                // Add new habit
-                final newHabit = Habit(
-                  name: name,
-                  frequency: 'daily', // Defaulting to daily for now
-                  goalAmount: goalAmount,
-                  unit: unit,
-                  lastChecked: DateTime.now().millisecondsSinceEpoch,
-                );
-                await dbHelper.insertHabit(newHabit);
-              } else {
-                // Update existing habit
-                existingHabit.name = name;
-                existingHabit.goalAmount = goalAmount;
-                existingHabit.unit = unit;
-                await dbHelper.updateHabit(existingHabit);
-              }
-              _refreshHabits();
-              Navigator.pop(context);
-            },
-            child: const Text('Save'),
-          ),
-        ],
+          );
+        },
       ),
     ).then((_) {
-      _habitNameController.clear();
-      _goalAmountController.clear();
-      _unitController.clear();
+      // Reset state after dialog closes
+      _isBinaryHabit = false;
     });
   }
 
-  // Show confirmation dialog for habit deletion
   void _confirmDeleteHabit(int habitId) {
     showDialog(
       context: context,
@@ -171,56 +205,64 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
     );
   }
 
-  // --- Habit Completion Logging Dialog ---
-
-  // Open dialog to log completion for a specific day
   void _openLogCompletionDialog(Habit habit, DateTime date) async {
     final int dateTimestamp = _getStartOfDayTimestamp(date);
     HabitCompletion? existingCompletion = await dbHelper.getHabitCompletionForDate(habit.id!, date);
 
-    final TextEditingController loggedAmountController = TextEditingController();
-    if (existingCompletion != null) {
-      loggedAmountController.text = existingCompletion.loggedAmount.toString();
-    }
+    // For binary habits, a simple checkmark or toggle is better
+    if (habit.isBinary) {
+      final bool newCompletionStatus = !(existingCompletion?.isSuccess ?? false);
+      await dbHelper.logHabitCompletion(
+        habitId: habit.id!,
+        loggedAmount: newCompletionStatus ? 1.0 : 0.0,
+        date: date,
+      );
+      _refreshHabits();
+    } else {
+      final TextEditingController loggedAmountController = TextEditingController();
+      if (existingCompletion != null) {
+        loggedAmountController.text = existingCompletion.loggedAmount.toString();
+      }
 
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Log ${habit.name} for ${DateFormat.yMMMd().format(date)}'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Goal: ${habit.goalAmount} ${habit.unit}'),
-            TextField(
-              controller: loggedAmountController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Logged Amount (${habit.unit})',
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Log ${habit.name} for ${DateFormat.yMMMd().format(date)}'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Goal: ${habit.goalAmount} ${habit.unit}'),
+              TextField(
+                controller: loggedAmountController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Logged Amount (${habit.unit})',
+                ),
               ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final double loggedAmount = double.tryParse(loggedAmountController.text) ?? 0.0;
+                await dbHelper.logHabitCompletion(
+                  habitId: habit.id!,
+                  loggedAmount: loggedAmount,
+                  date: date,
+                );
+                _refreshHabits();
+                Navigator.pop(context);
+              },
+              child: const Text('Save'),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final double loggedAmount = double.tryParse(loggedAmountController.text) ?? 0.0;
-              await dbHelper.logHabitCompletion(
-                habitId: habit.id!,
-                loggedAmount: loggedAmount,
-                date: date,
-              );
-              _refreshHabits(); // Refresh to update the success/failure indicators
-              Navigator.pop(context);
-            },
-            child: const Text('Save'),
-          ),
-        ],
-      ),
-    );
+      );
+    }
   }
 
   // --- Widget Build Method ---
@@ -231,7 +273,7 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text('Habit Tracker'),
-        automaticallyImplyLeading: false, // You might want to remove this if you have a drawer
+        automaticallyImplyLeading: false,
       ),
       body: FutureBuilder<List<Habit>>(
         future: _habitsFuture,
@@ -254,16 +296,15 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
               itemCount: habits.length,
               itemBuilder: (context, index) {
                 final habit = habits[index];
-                return GestureDetector( // Added GestureDetector for navigation
+                return GestureDetector(
                   onTap: () async {
-                    // Navigate to the detail page and await for it to pop
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => HabitDetailPage(habit: habit),
                       ),
                     );
-                    _refreshHabits(); // Refresh habits on this page when returning from detail page
+                    _refreshHabits();
                   },
                   child: _buildHabitCard(habit),
                 );
@@ -273,7 +314,15 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _openHabitDialog(),
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreateHabitPage()),
+          );
+          if (result == true) {
+            _refreshHabits();
+          }
+        },
         child: const Icon(Icons.add),
       ),
     );
@@ -302,26 +351,30 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
                 IconButton(
                   icon: const Icon(Icons.edit, color: Colors.blueGrey),
                   onPressed: () {
-                    // Stop tap propagation to avoid navigating when editing
                     _openHabitDialog(existingHabit: habit);
                   },
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.redAccent),
                   onPressed: () {
-                    // Stop tap propagation to avoid navigating when deleting
                     _confirmDeleteHabit(habit.id!);
                   },
                 ),
               ],
             ),
             const SizedBox(height: 8.0),
-            Text(
-              'Goal: ${habit.goalAmount.toStringAsFixed(0)} ${habit.unit} daily',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey[700]),
-            ),
+            // Updated to handle both habit types
+            if (!habit.isBinary)
+              Text(
+                'Goal: ${habit.goalAmount?.toStringAsFixed(0)} ${habit.unit} daily',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey[700]),
+              )
+            else
+              Text(
+                'Type: Yes/No',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey[700]),
+              ),
             const Divider(height: 20, thickness: 1),
-            // Display the last 7 days for logging
             Text(
               'Last 7 Days:',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -335,7 +388,6 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
                 } else if (snapshot.hasError) {
                   return Text('Error loading completions: ${snapshot.error}');
                 } else {
-                  // Map completions by date for efficient lookup
                   final Map<int, HabitCompletion> completionsMap = {
                     for (var c in snapshot.data!) c.date: c
                   };
@@ -348,29 +400,41 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
                       final completion = completionsMap[startOfDayTimestamp];
 
                       Color indicatorColor;
-                      String indicatorText;
+                      Widget indicatorContent;
 
                       if (completion != null) {
                         indicatorColor = completion.isSuccess ? Colors.green.shade600 : Colors.red.shade600;
-                        indicatorText = completion.loggedAmount.toStringAsFixed(0); // Display logged amount
+                        if (habit.isBinary) {
+                          indicatorContent = Icon(completion.isSuccess ? Icons.check : Icons.close, color: Colors.white,);
+                        } else {
+                          indicatorContent = Text(
+                            completion.loggedAmount.toStringAsFixed(0),
+                            style: TextStyle(
+                              color: completion.isSuccess ? Colors.white : Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        }
                       } else {
                         indicatorColor = Colors.grey.shade300;
-                        indicatorText = 'N/A'; // No completion logged
+                        indicatorContent = Text(
+                          'N/A',
+                          style: TextStyle(color: Colors.black),
+                        );
                       }
 
                       return GestureDetector(
                         onTap: () {
-                          // Allow logging from the main page too, but don't navigate
                           _openLogCompletionDialog(habit, date);
                         },
                         child: Column(
                           children: [
                             Text(
-                              DateFormat('EEE').format(date), // Mon, Tue etc.
+                              DateFormat('EEE').format(date),
                               style: const TextStyle(fontSize: 12, color: Colors.grey),
                             ),
                             Text(
-                              DateFormat('MMM d').format(date), // Aug 17, etc.
+                              DateFormat('MMM d').format(date),
                               style: const TextStyle(fontSize: 10, color: Colors.grey),
                             ),
                             const SizedBox(height: 4),
@@ -383,13 +447,7 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
                                 border: Border.all(color: Colors.black12),
                               ),
                               child: Center(
-                                child: Text(
-                                  indicatorText,
-                                  style: TextStyle(
-                                    color: (completion != null && completion.isSuccess) ? Colors.white : Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                child: indicatorContent,
                               ),
                             ),
                           ],

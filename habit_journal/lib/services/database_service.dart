@@ -24,23 +24,24 @@ class DatabaseHelper {
 
     return await openDatabase(
       dbPath,
-      version: 1,
+      version: 2, // New: Incremented version to handle schema changes
       onCreate: _onCreate,
-      // onUpgrade: _onUpgrade, // Uncomment and implement if you need to handle schema changes in future versions
+      onUpgrade: _onUpgrade, // New: Added onUpgrade to handle schema changes
     );
   }
 
   // This method is called when the database is first created
   Future<void> _onCreate(Database db, int version) async {
-    // Create the Habits table with new goal and unit columns
+    // Create the Habits table with the new isBinary column
     await db.execute('''
       CREATE TABLE habits(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         frequency TEXT NOT NULL,
-        goalAmount REAL NOT NULL, -- New: The target amount
-        unit TEXT NOT NULL,      -- New: The unit of the goal
-        lastChecked INTEGER      -- Unix timestamp for last overall interaction
+        goalAmount REAL, -- Made nullable for binary habits
+        unit TEXT,      -- Made nullable for binary habits
+        isBinary INTEGER NOT NULL DEFAULT 0, -- New: 0 for unit-based, 1 for binary
+        lastChecked INTEGER
       )
     ''');
 
@@ -70,14 +71,14 @@ class DatabaseHelper {
     print('Habits, HabitCompletions, and Notes tables created successfully!');
   }
 
-  // Example for handling database upgrades (e.g., adding new columns)
-  // Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-  //   if (oldVersion < 2) {
-  //     // Example: If you needed to add a new column 'description' to habits in version 2
-  //     await db.execute('ALTER TABLE habits ADD COLUMN description TEXT;');
-  //   }
-  //   // Add more upgrade logic for other versions as needed
-  // }
+  // Method to handle database schema upgrades
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // Add the new isBinary column to the habits table
+      await db.execute('ALTER TABLE habits ADD COLUMN isBinary INTEGER NOT NULL DEFAULT 0;');
+      print('Upgraded database to version 2: Added isBinary column to habits table.');
+    }
+  }
 
   // --- CRUD Operations for Habits ---
 
@@ -130,7 +131,6 @@ class DatabaseHelper {
   }
 
   // Insert or update a daily completion for a habit
-  // This method handles the logic of determining success based on the habit's goal
   Future<int> logHabitCompletion({
     required int habitId,
     required double loggedAmount,
@@ -149,10 +149,16 @@ class DatabaseHelper {
       throw Exception('Habit with ID $habitId not found.');
     }
     final Habit habit = Habit.fromMap(habitMaps.first);
-    final double goalAmount = habit.goalAmount;
+
+    // New logic: determine success based on habit type
+    final bool isSuccess;
+    if (habit.isBinary) {
+      isSuccess = loggedAmount >= 1.0;
+    } else {
+      isSuccess = loggedAmount >= (habit.goalAmount ?? 0.0);
+    }
 
     final int dateTimestamp = _getStartOfDayTimestamp(date ?? DateTime.now());
-    final bool isSuccess = loggedAmount >= goalAmount;
 
     final HabitCompletion completion = HabitCompletion(
       habitId: habitId,
@@ -205,7 +211,7 @@ class DatabaseHelper {
   Future<int> updateHabitCompletion(HabitCompletion completion) async {
     Database db = await instance.database;
 
-    // Re-calculate isSuccess in case loggedAmount changed relative to habit's goal
+    // Get the habit to determine its type and goal
     final List<Map<String, dynamic>> habitMaps = await db.query(
       'habits',
       where: 'id = ?',
@@ -215,7 +221,13 @@ class DatabaseHelper {
       throw Exception('Habit with ID ${completion.habitId} not found.');
     }
     final Habit habit = Habit.fromMap(habitMaps.first);
-    completion.isSuccess = completion.loggedAmount >= habit.goalAmount;
+
+    // New logic: Re-calculate isSuccess based on the habit type
+    if (habit.isBinary) {
+      completion.isSuccess = completion.loggedAmount >= 1.0;
+    } else {
+      completion.isSuccess = completion.loggedAmount >= (habit.goalAmount ?? 0.0);
+    }
 
     return await db.update(
       'habit_completions',
@@ -275,84 +287,3 @@ class DatabaseHelper {
     return await db.delete('notes', where: 'id = ?', whereArgs: [id]);
   }
 }
-
-// How to use it in your Flutter app:
-// import 'package:flutter/material.dart'; // Needed for WidgetsFlutterBinding
-
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   final dbHelper = DatabaseHelper.instance;
-//   await dbHelper.database; // This will trigger _onCreate if the database doesn't exist
-//   print('Database opened and tables ensured.');
-
-//   // --- Example Usage for Habits ---
-//   print('\n--- Habit Operations (Enhanced) ---');
-//   // Insert a new habit with goal and unit
-//   final newHabitId = await dbHelper.insertHabit(Habit(
-//     name: 'Drink Water',
-//     frequency: 'daily',
-//     goalAmount: 2.0, // Goal: 2 liters
-//     unit: 'liters',
-//     lastChecked: DateTime.now().millisecondsSinceEpoch,
-//   ));
-//   print('Inserted habit with ID: $newHabitId');
-
-//   // Get all habits
-//   List<Habit> habits = await dbHelper.getHabits();
-//   print('All habits: $habits');
-
-//   // Log a completion for the new habit
-//   if (newHabitId > 0) {
-//     await dbHelper.logHabitCompletion(habitId: newHabitId, loggedAmount: 1.5); // Not successful yet (1.5 < 2.0)
-//     print('Logged 1.5 liters for habit ID $newHabitId');
-//     await dbHelper.logHabitCompletion(habitId: newHabitId, loggedAmount: 2.5); // Successful (2.5 >= 2.0)
-//     print('Logged 2.5 liters for habit ID $newHabitId'); // This will replace the previous log for today
-
-//     List<HabitCompletion> completions = await dbHelper.getHabitCompletionsForHabit(newHabitId);
-//     print('Completions for habit ID $newHabitId: $completions');
-
-//     // Log completion for a past date (for demonstration)
-//     final yesterday = DateTime.now().subtract(Duration(days: 1));
-//     await dbHelper.logHabitCompletion(habitId: newHabitId, loggedAmount: 3.0, date: yesterday);
-//     print('Logged 3.0 liters for yesterday for habit ID $newHabitId');
-//     completions = await dbHelper.getHabitCompletionsForHabit(newHabitId);
-//     print('Completions for habit ID $newHabitId: $completions');
-
-//     // Get specific completion
-//     final todaysCompletion = await dbHelper.getHabitCompletionForDate(newHabitId, DateTime.now());
-//     print('Today\'s completion for habit ID $newHabitId: $todaysCompletion');
-//   }
-
-//   // Update a habit
-//   if (habits.isNotEmpty) {
-//     Habit firstHabit = habits.first;
-//     firstHabit.name = 'Drink 8 Glasses of Water';
-//     firstHabit.goalAmount = 8.0;
-//     firstHabit.unit = 'glasses';
-//     await dbHelper.updateHabit(firstHabit);
-//     print('Updated first habit. New list: ${await dbHelper.getHabits()}');
-//   }
-
-//   // Delete a habit
-//   if (habits.isNotEmpty) {
-//     await dbHelper.deleteHabit(habits.first.id!);
-//     print('Deleted first habit. New list: ${await dbHelper.getHabits()}');
-//   }
-
-//   // --- Example Usage for Notes (unchanged) ---
-//   print('\n--- Note Operations ---');
-//   final newNoteId = await dbHelper.insertNote(Note(title: 'Grocery List', content: 'Milk, Eggs, Bread', timestamp: DateTime.now().millisecondsSinceEpoch));
-//   print('Inserted note with ID: $newNoteId');
-//   List<Note> notes = await dbHelper.getNotes();
-//   print('All notes: $notes');
-//   if (notes.isNotEmpty) {
-//     Note firstNote = notes.first;
-//     firstNote.content = 'Milk, Eggs, Bread, Cheese';
-//     await dbHelper.updateNote(firstNote);
-//     print('Updated first note. New list: ${await dbHelper.getNotes()}');
-//   }
-//   if (notes.isNotEmpty) {
-//     await dbHelper.deleteNote(notes.first.id!);
-//     print('Deleted first note. New list: ${await dbHelper.getNotes()}');
-//   }
-// }
