@@ -1,3 +1,4 @@
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 // Import your DatabaseHelper and Note model
@@ -152,39 +153,30 @@ class _JournalPageState extends State<JournalPage> {
     return Scaffold(
       // drawer: HabitJournalMenuDrawer(), // Commented out due to external dependency
       appBar: AppBar(
-        backgroundColor: Colors.pink,
-        title: const Text('Journal'),
-        // leading: Builder( // Commented out due to external dependency
-        //   builder: (context) {
-        //     return IconButton(
-        //       icon: const Icon(Icons.menu),
-        //       onPressed: () {
-        //         Scaffold.of(context).openDrawer();
-        //       },
-        //     );
-        //   },
-        // ),
-        // actions: [ // Commented out due to external dependency
-        //   IconButton(
-        //     icon: const Icon(Icons.person),
-        //     onPressed: () {
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute<ProfileScreen>(
-        //           builder: (context) => ProfileScreen(
-        //             appBar: AppBar(title: const Text('User Profile')),
-        //             actions: [
-        //               SignedOutAction((context) {
-        //                 Navigator.of(context).pop();
-        //               }),
-        //             ],
-        //             children: [const Divider()],
-        //           ),
-        //         ),
-        //       );
-        //     },
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<ProfileScreen>(
+                  builder: (context) => ProfileScreen(
+                    appBar: AppBar(title: const Text('User Profile')),
+                    actions: [
+                      SignedOutAction((context) {
+                        Navigator.of(context).pop();
+                      }),
+                    ],
+                    children: [
+                      const Divider(),
+                      
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
         automaticallyImplyLeading: false,
       ),
       body: FutureBuilder<List<Note>>(

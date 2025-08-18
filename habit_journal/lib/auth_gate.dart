@@ -25,7 +25,7 @@ class AuthGate extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: AspectRatio(
                   aspectRatio: 1,
-                  child: Icon(Icons.one_x_mobiledata),
+                  child: Placeholder(),
                 ),
               );
             },

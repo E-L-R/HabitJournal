@@ -1,3 +1,4 @@
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:habit_journal/models/habit.dart';
 import 'package:habit_journal/models/habit_completion.dart';
@@ -131,8 +132,30 @@ class _HabitTrackerPageState extends State<HabitTrackerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        title: const Text('Habit Tracker'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<ProfileScreen>(
+                  builder: (context) => ProfileScreen(
+                    appBar: AppBar(title: const Text('User Profile')),
+                    actions: [
+                      SignedOutAction((context) {
+                        Navigator.of(context).pop();
+                      }),
+                    ],
+                    children: [
+                      const Divider(),
+                      
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
         automaticallyImplyLeading: false,
       ),
       body: FutureBuilder<List<Habit>>(
