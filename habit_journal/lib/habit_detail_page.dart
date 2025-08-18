@@ -1,3 +1,5 @@
+// lib/habit_detail_page.dart
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:habit_journal/models/habit.dart';
 import 'package:habit_journal/models/habit_completion.dart';
@@ -25,6 +27,11 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
   late PageController _pageController;
   late List<DateTime> _monthsToShow;
 
+  // New Timer-related state
+  Timer? _timer;
+  int _secondsElapsed = 0;
+  bool _isTimerRunning = false;
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +44,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
   void dispose() {
     _loggedAmountController.dispose();
     _pageController.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -162,13 +170,11 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
     HabitCompletion? completionForDate = existingCompletion ?? await _dbHelper.getHabitCompletionForDate(widget.habit.id!, date);
     
     if (completionForDate != null) {
-      // Toggle off by deleting the completion
       await _dbHelper.deleteHabitCompletion(completionForDate.id!);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Completion for ${DateFormat.yMd().format(date)} deleted.')),
       );
     } else {
-      // Toggle on by logging a new completion
       await _dbHelper.logHabitCompletion(
         habitId: widget.habit.id!,
         loggedAmount: 1.0,
@@ -256,6 +262,40 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
     return (totalCompleted / totalAttempted) * 100;
   }
 
+  // New: Function to start and stop the timer
+  void _toggleTimer() {
+    if (_isTimerRunning) {
+      _timer?.cancel();
+      // Log completion when timer is stopped
+      _dbHelper.logHabitCompletion(
+        habitId: widget.habit.id!,
+        loggedAmount: _secondsElapsed.toDouble() / 60, // Log in minutes
+        date: DateTime.now(),
+      );
+      setState(() {
+        _isTimerRunning = false;
+        _secondsElapsed = 0;
+      });
+      _refreshCompletions();
+    } else {
+      setState(() {
+        _isTimerRunning = true;
+      });
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        setState(() {
+          _secondsElapsed++;
+        });
+      });
+    }
+  }
+
+  // New: Helper to format elapsed time
+  String _formatTime(int seconds) {
+    final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
+    final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$remainingSeconds';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -275,14 +315,23 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (widget.habit.isBinary)
+                  if (widget.habit.type == HabitType.binary)
                     const Text('Type: Yes/No', style: TextStyle(fontSize: 18))
+                  else if (widget.habit.type == HabitType.unit)
+                    Text(
+                      'Goal: ${widget.habit.goalAmount?.toStringAsFixed(0)} ${widget.habit.unit}',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    )
                   else
                     Text(
                       'Goal: ${widget.habit.goalAmount?.toStringAsFixed(0)} ${widget.habit.unit}',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   const SizedBox(height: 16.0),
+                  if (widget.habit.type == HabitType.time)
+                    _buildTimerSection()
+                  else
+                    const SizedBox.shrink(),
                   const Divider(),
                   _buildCalendar(),
                   const SizedBox(height: 24.0),
@@ -297,16 +346,46 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final today = DateTime.now();
-          if (widget.habit.isBinary) {
+          if (widget.habit.type == HabitType.binary) {
             _handleBinaryCompletion(date: today);
-          } else {
+          } else if (widget.habit.type == HabitType.unit) {
             _openUnitCompletionDialog(date: today);
+          } else {
+            _toggleTimer();
           }
         },
-        child: widget.habit.isBinary ? const Icon(Icons.check) : const Icon(Icons.add),
+        child: widget.habit.type == HabitType.binary ? const Icon(Icons.check) : widget.habit.type == HabitType.unit ? const Icon(Icons.add) : const Icon(Icons.timer),
       ),
     );
   }
+
+  Widget _buildTimerSection() {
+    return Column(
+      children: [
+        Text(
+          _formatTime(_secondsElapsed),
+          style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton.icon(
+          onPressed: _toggleTimer,
+          icon: Icon(_isTimerRunning ? Icons.pause : Icons.play_arrow),
+          label: Text(_isTimerRunning ? 'Pause & Log' : 'Start Timer'),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+        const SizedBox(height: 16),
+        TextButton(
+          onPressed: () => _openUnitCompletionDialog(date: DateTime.now()),
+          child: const Text('Or, log time manually'),
+        ),
+      ],
+    );
+  }
+
+  // The rest of the page remains the same, with minor adjustments to use `widget.habit.type`
+  // ... (unchanged _buildCalendar, _buildStatistics, _buildStatRow)
 
   Widget _buildCalendar() {
     return Column(
@@ -374,7 +453,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                         Widget indicatorContent;
                         if (completion != null) {
                           indicatorColor = completion.isSuccess ? Colors.green.shade600 : Colors.red.shade600;
-                          if (widget.habit.isBinary) {
+                          if (widget.habit.type == HabitType.binary) {
                             indicatorContent = Icon(completion.isSuccess ? Icons.check : Icons.close, color: Colors.white, size: 20);
                           } else {
                             indicatorContent = Column(
@@ -382,14 +461,14 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                               children: [
                                 Text(
                                   DateFormat('d').format(date),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
                                   completion.loggedAmount.toStringAsFixed(0),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.white70,
                                     fontSize: 10,
                                   ),
@@ -401,7 +480,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                           indicatorColor = Colors.grey.shade200;
                           indicatorContent = Text(
                             DateFormat('d').format(date),
-                            style: TextStyle(color: Colors.black87, fontWeight: FontWeight.normal, fontSize: 14),
+                            style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.normal, fontSize: 14),
                           );
                         }
 
@@ -409,7 +488,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
 
                         return GestureDetector(
                           onTap: () {
-                            if (widget.habit.isBinary) {
+                            if (widget.habit.type == HabitType.binary) {
                               _handleBinaryCompletion(existingCompletion: completion, date: date);
                             } else {
                               _openUnitCompletionDialog(existingCompletion: completion, date: date);
@@ -454,7 +533,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
         const SizedBox(height: 16.0),
         _buildStatRow('Total Days Attempted:', '$totalAttemptedDays days'),
         _buildStatRow('Total Completed Days:', '$totalCompletedDays days'),
-        if (!widget.habit.isBinary)
+        if (widget.habit.type != HabitType.binary)
           _buildStatRow('Average Completion:', '${averageCompletion.toStringAsFixed(1)} ${widget.habit.unit}'),
         _buildStatRow('Success Rate:', '${successRate.toStringAsFixed(1)}%'),
         _buildStatRow('Current Streak:', '$currentStreak days'),

@@ -15,7 +15,7 @@ class _CreateHabitPageState extends State<CreateHabitPage> {
   final _goalAmountController = TextEditingController();
   final _unitController = TextEditingController();
 
-  bool _isBinaryHabit = false;
+  HabitType _selectedType = HabitType.binary;
 
   @override
   void dispose() {
@@ -28,20 +28,27 @@ class _CreateHabitPageState extends State<CreateHabitPage> {
   void _saveHabit() async {
     if (_formKey.currentState!.validate()) {
       final name = _habitNameController.text;
-      final goalAmount = _isBinaryHabit ? null : double.tryParse(_goalAmountController.text);
-      final unit = _isBinaryHabit ? null : _unitController.text;
+      final goalAmount = (_selectedType == HabitType.binary) ? null : double.tryParse(_goalAmountController.text);
+      
+      // Conditionally set the unit based on the habit type
+      String? unit;
+      if (_selectedType == HabitType.unit) {
+        unit = _unitController.text;
+      } else if (_selectedType == HabitType.time) {
+        unit = 'minutes';
+      }
 
       final newHabit = Habit(
         name: name,
         frequency: 'daily',
         goalAmount: goalAmount,
         unit: unit,
-        isBinary: _isBinaryHabit,
+        type: _selectedType,
         lastChecked: DateTime.now().millisecondsSinceEpoch,
       );
 
       await DatabaseHelper.instance.insertHabit(newHabit);
-      Navigator.pop(context, true); // Pop with a result to indicate success
+      Navigator.pop(context, true);
     }
   }
 
@@ -83,14 +90,14 @@ class _CreateHabitPageState extends State<CreateHabitPage> {
                     child: ElevatedButton.icon(
                       onPressed: () {
                         setState(() {
-                          _isBinaryHabit = true;
+                          _selectedType = HabitType.binary;
                         });
                       },
                       icon: const Icon(Icons.check),
                       label: const Text('Yes/No'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _isBinaryHabit ? Theme.of(context).colorScheme.primary : Colors.grey[200],
-                        foregroundColor: _isBinaryHabit ? Theme.of(context).colorScheme.onPrimary : Colors.black,
+                        backgroundColor: _selectedType == HabitType.binary ? Theme.of(context).colorScheme.primary : Colors.grey[200],
+                        foregroundColor: _selectedType == HabitType.binary ? Theme.of(context).colorScheme.onPrimary : Colors.black,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                     ),
@@ -100,14 +107,31 @@ class _CreateHabitPageState extends State<CreateHabitPage> {
                     child: ElevatedButton.icon(
                       onPressed: () {
                         setState(() {
-                          _isBinaryHabit = false;
+                          _selectedType = HabitType.unit;
                         });
                       },
                       icon: const Icon(Icons.numbers),
                       label: const Text('Unit-Based'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: !_isBinaryHabit ? Theme.of(context).colorScheme.primary : Colors.grey[200],
-                        foregroundColor: !_isBinaryHabit ? Theme.of(context).colorScheme.onPrimary : Colors.black,
+                        backgroundColor: _selectedType == HabitType.unit ? Theme.of(context).colorScheme.primary : Colors.grey[200],
+                        foregroundColor: _selectedType == HabitType.unit ? Theme.of(context).colorScheme.onPrimary : Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _selectedType = HabitType.time;
+                        });
+                      },
+                      icon: const Icon(Icons.timer),
+                      label: const Text('Time-Based'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _selectedType == HabitType.time ? Theme.of(context).colorScheme.primary : Colors.grey[200],
+                        foregroundColor: _selectedType == HabitType.time ? Theme.of(context).colorScheme.onPrimary : Colors.black,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                     ),
@@ -115,38 +139,39 @@ class _CreateHabitPageState extends State<CreateHabitPage> {
                 ],
               ),
               const SizedBox(height: 24),
-              if (!_isBinaryHabit) ...[
+              if (_selectedType != HabitType.binary) ...[
                 TextFormField(
                   controller: _goalAmountController,
-                  decoration: const InputDecoration(
-                    labelText: 'Daily Goal Amount',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: _selectedType == HabitType.time ? 'Daily Goal (in minutes)' : 'Daily Goal Amount',
+                    border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (!_isBinaryHabit && (value == null || value.isEmpty)) {
-                      return 'Please enter a goal amount';
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a goal';
                     }
-                    if (!_isBinaryHabit && double.tryParse(value!) == null) {
+                    if (double.tryParse(value) == null) {
                       return 'Please enter a valid number';
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _unitController,
-                  decoration: const InputDecoration(
-                    labelText: 'Unit (e.g., "liters", "pages")',
-                    border: OutlineInputBorder(),
+                if (_selectedType != HabitType.time)
+                  TextFormField(
+                    controller: _unitController,
+                    decoration: const InputDecoration(
+                      labelText: 'Unit (e.g., "liters", "pages")',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a unit';
+                      }
+                      return null;
+                    },
                   ),
-                  validator: (value) {
-                    if (!_isBinaryHabit && (value == null || value.isEmpty)) {
-                      return 'Please enter a unit';
-                    }
-                    return null;
-                  },
-                ),
               ],
               const SizedBox(height: 24),
               ElevatedButton(

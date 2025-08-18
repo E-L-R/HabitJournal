@@ -1,51 +1,55 @@
+// lib/models/habit.dart
+enum HabitType { binary, unit, time }
+
 // --- Habit Model ---
 class Habit {
   int? id;
   String name;
   String frequency; // e.g., 'daily', 'weekly'
-  double? goalAmount; // Made nullable for binary habits
-  String? unit; // Made nullable for binary habits
-  bool isBinary; // New: true for yes/no habits, false for unit-based
-  int? lastChecked;
+  double? goalAmount; // The target amount or duration
+  String? unit; // The unit of the goal (e.g., 'minutes', 'liters')
+  HabitType type; // New: The type of habit (binary, unit, or time)
+  int? lastChecked; // Unix timestamp for last overall interaction with the habit
 
   Habit({
     this.id,
     required this.name,
     required this.frequency,
-    this.goalAmount, // No longer required
-    this.unit, // No longer required
-    this.isBinary = false, // Default to false (unit-based)
+    this.goalAmount,
+    this.unit,
     this.lastChecked,
+    this.type = HabitType.unit, // New: Default to unit-based
   });
 
-  // Convert a Habit object into a Map for database insertion
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
       'frequency': frequency,
-      'goalAmount': goalAmount, // Can be null
-      'unit': unit, // Can be null
-      'isBinary': isBinary ? 1 : 0, // SQLite stores booleans as 0 or 1
+      'goalAmount': goalAmount,
+      'unit': unit,
+      'type': type.index, // New: Store the enum index
       'lastChecked': lastChecked,
     };
   }
 
-  // Convert a Map (from database) into a Habit object
   factory Habit.fromMap(Map<String, dynamic> map) {
     return Habit(
       id: map['id'],
       name: map['name'],
       frequency: map['frequency'],
-      goalAmount: map['goalAmount'] as double?, // Use 'as double?' for null-safe casting
+      goalAmount: map['goalAmount'] as double?, // Made nullable
       unit: map['unit'],
-      isBinary: map['isBinary'] == 1, // Convert 0/1 back to bool
+      type: HabitType.values[map['type'] as int], // New: Get enum from index
       lastChecked: map['lastChecked'],
     );
   }
 
   @override
   String toString() {
-    return 'Habit(id: $id, name: $name, frequency: $frequency, isBinary: $isBinary, goalAmount: $goalAmount $unit, lastChecked: $lastChecked)';
+    return 'Habit{id: $id, name: $name, type: ${type.name}, goalAmount: $goalAmount, unit: $unit}';
   }
 }
+
+// --- HabitCompletion Model (No changes needed) ---
+// ... keep this file as is
