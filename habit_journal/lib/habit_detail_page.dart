@@ -143,18 +143,18 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                 return;
               }
               final selectedDate = DateFormat.yMd().parse(_dateController.text);
-
-              if (existingCompletion != null) {
-                existingCompletion.loggedAmount = loggedAmount;
-                existingCompletion.date = selectedDate.millisecondsSinceEpoch;
-                await _dbHelper.updateHabitCompletion(existingCompletion);
-              } else {
+              final int dateTimestamp = _getStartOfDayTimestamp(selectedDate);
+              
+              if (loggedAmount == 0 && existingCompletion != null) {
+                await _dbHelper.deleteHabitCompletion(existingCompletion.id!);
+              } else if (loggedAmount > 0) {
                 await _dbHelper.logHabitCompletion(
                   habitId: widget.habit.id!,
                   loggedAmount: loggedAmount,
                   date: selectedDate,
                 );
               }
+
               _refreshCompletions();
               Navigator.pop(context);
             },
@@ -263,20 +263,51 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
   }
 
   // New: Function to start and stop the timer
-  void _toggleTimer() {
+  void _toggleTimer() async { // Made async to await the dialog result
     if (_isTimerRunning) {
       _timer?.cancel();
-      // Log completion when timer is stopped
-      _dbHelper.logHabitCompletion(
-        habitId: widget.habit.id!,
-        loggedAmount: _secondsElapsed.toDouble() / 60, // Log in minutes
-        date: DateTime.now(),
-      );
       setState(() {
         _isTimerRunning = false;
-        _secondsElapsed = 0;
       });
-      _refreshCompletions();
+
+      // Show confirmation dialog to log time
+      final bool? shouldLog = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Log Time?'),
+          content: Text('Do you want to log ${_formatTime(_secondsElapsed)} for this habit?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Log'),
+            ),
+          ],
+        ),
+      );
+
+      if (shouldLog == true && _secondsElapsed > 0) {
+        await _dbHelper.logHabitCompletion(
+          habitId: widget.habit.id!,
+          loggedAmount: _secondsElapsed.toDouble() / 60, // Log in minutes
+          date: DateTime.now(),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Logged ${_formatTime(_secondsElapsed)} for habit!')),
+        );
+      } else if (shouldLog == false) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Time logging cancelled.')),
+        );
+      }
+
+      setState(() {
+        _secondsElapsed = 0; // Reset seconds after showing dialog
+      });
+      _refreshCompletions(); // Refresh completions after logging or cancelling
     } else {
       setState(() {
         _isTimerRunning = true;
@@ -342,19 +373,6 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
             );
           }
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final today = DateTime.now();
-          if (widget.habit.type == HabitType.binary) {
-            _handleBinaryCompletion(date: today);
-          } else if (widget.habit.type == HabitType.unit) {
-            _openUnitCompletionDialog(date: today);
-          } else {
-            _toggleTimer();
-          }
-        },
-        child: widget.habit.type == HabitType.binary ? const Icon(Icons.check) : widget.habit.type == HabitType.unit ? const Icon(Icons.add) : const Icon(Icons.timer),
       ),
     );
   }
