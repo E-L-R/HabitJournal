@@ -1,12 +1,13 @@
+// lib/journal_page.dart
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-// Import your DatabaseHelper and Note model
-import 'package:habit_journal/models/note.dart'; // Assuming this path for your Note model
-import 'package:habit_journal/services/database_service.dart'; // Assuming this path for your DatabaseHelper
+import 'package:habit_journal/models/note.dart';
+import 'package:habit_journal/services/database_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-// Note: You would typically pass the DatabaseHelper instance or use a service locator
-// For simplicity in this example, we'll use the singleton instance directly.
+final DatabaseHelper dbHelper = DatabaseHelper.instance;
+final TextEditingController textController = TextEditingController();
 
 class JournalPage extends StatefulWidget {
   const JournalPage({super.key});
@@ -15,36 +16,26 @@ class JournalPage extends StatefulWidget {
   State<JournalPage> createState() => _JournalPageState();
 }
 
-// Database helper instance
-final DatabaseHelper dbHelper = DatabaseHelper.instance;
-
-// text controller
-final TextEditingController textController = TextEditingController();
-
 class _JournalPageState extends State<JournalPage> {
-  // A future to hold notes, to be used with FutureBuilder
   late Future<List<Note>> _notesFuture;
 
   @override
   void initState() {
     super.initState();
-    _refreshNotes(); // Load notes when the widget initializes
+    _refreshNotes();
   }
 
-  // Method to refresh the list of notes
   void _refreshNotes() {
     setState(() {
       _notesFuture = dbHelper.getNotes();
     });
   }
 
-  // open a dialog box to add a note
   void openNoteBox({Note? existingNote}) {
-    // If we are editing, pre-fill the text field
     if (existingNote != null) {
-      textController.text = existingNote.content ?? ''; // Use content field
+      textController.text = existingNote.content ?? '';
     } else {
-      textController.clear(); // Clear for new notes
+      textController.clear();
     }
 
     showDialog(
@@ -52,16 +43,15 @@ class _JournalPageState extends State<JournalPage> {
       builder: (context) => AlertDialog(
         title: Text(existingNote == null ? 'Add Note' : 'Edit Note'),
         content: SizedBox(
-          // Give the text field a larger, fixed size.
           height: 250,
           width: MediaQuery.of(context).size.width,
           child: TextField(
             controller: textController,
             autofocus: true,
-            maxLines: null, // Required for expands to work.
-            expands: true, // Makes the TextField fill the SizedBox.
+            maxLines: null,
+            expands: true,
             keyboardType: TextInputType.multiline,
-            textAlignVertical: TextAlignVertical.top, // Aligns text to the top.
+            textAlignVertical: TextAlignVertical.top,
             decoration: const InputDecoration(
               hintText: 'Enter your journal entry...',
               border: OutlineInputBorder(),
@@ -70,34 +60,28 @@ class _JournalPageState extends State<JournalPage> {
           ),
         ),
         actions: [
-          // button to cancel
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
             child: const Text('Cancel'),
           ),
-          // button to save
           ElevatedButton(
             onPressed: () async {
               if (existingNote == null) {
-                // Add a new note
                 final newNote = Note(
-                  title: textController.text.split('\n').first.trim(), // Use first line as title or default
+                  title: textController.text.split('\n').first.trim(),
                   content: textController.text,
                   timestamp: DateTime.now().millisecondsSinceEpoch,
                 );
                 await dbHelper.insertNote(newNote);
               } else {
-                // Update an existing note
                 existingNote.content = textController.text;
-                existingNote.title = textController.text.split('\n').first.trim(); // Update title
-                existingNote.timestamp = DateTime.now().millisecondsSinceEpoch; // Update timestamp on edit
+                existingNote.title = textController.text.split('\n').first.trim();
+                existingNote.timestamp = DateTime.now().millisecondsSinceEpoch;
                 await dbHelper.updateNote(existingNote);
               }
-              // Refresh the notes list
               _refreshNotes();
-              // close the dialog box
               Navigator.pop(context);
             },
             child: const Text('Save'),
@@ -105,12 +89,10 @@ class _JournalPageState extends State<JournalPage> {
         ],
       ),
     ).then((_) {
-      // Ensure the controller is cleared when the dialog is closed
       textController.clear();
     });
   }
 
-  // show a dialog box to confirm note deletion
   void _showDeleteConfirmationDialog(int noteId) {
     showDialog(
       context: context,
@@ -120,16 +102,14 @@ class _JournalPageState extends State<JournalPage> {
           'Are you sure you want to delete this note? This action cannot be undone.',
         ),
         actions: [
-          // button to cancel
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
-          // button to delete
           ElevatedButton(
             onPressed: () async {
               await dbHelper.deleteNote(noteId);
-              _refreshNotes(); // Refresh the notes list
+              _refreshNotes();
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
@@ -145,14 +125,119 @@ class _JournalPageState extends State<JournalPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Note: Removed Firebase imports and FirebaseUIAuth dependencies
-    // You'll need to handle authentication separately if you still require it
-    // and are moving away from Firebase Auth for other parts of your app.
-    // The MenuDrawer and ProfileScreen imports are commented out as they rely on external files.
-
     return Scaffold(
-      // drawer: HabitJournalMenuDrawer(), // Commented out due to external dependency
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Data Management',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.cloud_upload),
+              title: const Text('Upload All Data to Firestore'),
+              onTap: () async {
+                Navigator.pop(context);
+                try {
+                  await dbHelper.uploadAllDataToFirestore();
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Data uploaded successfully!')),
+                    );
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error uploading data: $e')),
+                    );
+                  }
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.sync),
+              title: const Text('Sync All Data from Firestore'),
+              onTap: () async {
+                Navigator.pop(context);
+                try {
+                  await dbHelper.syncDataFromFirestore();
+                  _refreshNotes();
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Data synced successfully!')),
+                    );
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error syncing data: $e')),
+                    );
+                  }
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_forever, color: Colors.red),
+              title: const Text('Delete All My Data', style: TextStyle(color: Colors.red)),
+              onTap: () async {
+                Navigator.pop(context); // Close the drawer
+                bool? confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Confirm Data Deletion'),
+                    content: const Text(
+                      'Are you sure you want to delete ALL your habits, completions, and notes from Firestore and your device? This action cannot be undone.',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancel'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Delete All'),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirm == true) {
+                  try {
+                    await dbHelper.deleteAllUserDataFromFirestore();
+                    _refreshNotes(); // Refresh local UI after deletion
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('All user data deleted successfully!')),
+                      );
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error deleting data: $e')),
+                      );
+                    }
+                  }
+                }
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
+        title: const Text('Journal'),
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
@@ -169,7 +254,6 @@ class _JournalPageState extends State<JournalPage> {
                     ],
                     children: [
                       const Divider(),
-                      
                     ],
                   ),
                 ),
@@ -177,10 +261,9 @@ class _JournalPageState extends State<JournalPage> {
             },
           ),
         ],
-        automaticallyImplyLeading: false,
       ),
       body: FutureBuilder<List<Note>>(
-        future: _notesFuture, // Use the Future from SQFlite
+        future: _notesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -198,8 +281,7 @@ class _JournalPageState extends State<JournalPage> {
             return ListView.builder(
               itemCount: notesList.length,
               itemBuilder: (context, index) {
-                Note note = notesList[index]; // Get Note object directly
-
+                Note note = notesList[index];
                 String noteTime = DateFormat.yMMMd().add_jm().format(
                     DateTime.fromMillisecondsSinceEpoch(note.timestamp));
 
@@ -218,37 +300,33 @@ class _JournalPageState extends State<JournalPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          note.title, // Use note.title
+                          note.title,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 8.0),
                         Text(
-                          note.content ?? '', // Use note.content
-                          style: Theme.of(context).textTheme.bodyMedium, // Changed from bodySmall for better readability
+                          note.content ?? '',
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(height: 8.0),
                         Text(
                           noteTime,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: Colors.grey[600]),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            // update button
                             IconButton(
                               onPressed: () => openNoteBox(
-                                existingNote: note, // Pass the Note object
+                                existingNote: note,
                               ),
                               icon: Icon(
                                 Icons.edit_outlined,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
-                            // delete button
                             IconButton(
-                              onPressed: () =>
-                                  _showDeleteConfirmationDialog(note.id!), // Pass note.id
+                              onPressed: () => _showDeleteConfirmationDialog(note.id!),
                               icon: Icon(
                                 Icons.delete_outline,
                                 color: Theme.of(context).colorScheme.error,
