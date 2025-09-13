@@ -1,0 +1,294 @@
+
+Appendix 3 - Use of Microsoft Copilot (Microsoft, no date b)
+
+Prompt:
+Hey fix the grammar restructure and fix up this email I am about to send: Good morning Dr Chapman. My name is Elijah Lazerman Robichaud. I am looking forward to getting your input on my project throughout the course. I live in South Korea. This isn’t my first idea for a project, but it is the one I am settling on as the first one seemed to be too legally complicated, and I think it would have been difficult to appropriately research and cite the relevant laws for it as I do not speak Korean.
+Here’s an overview of the project: So the problem I am looking to solve now is that a few weeks ago, after factory resetting my phone, I noticed that the app I had paid 6 dollars years ago to track my daily habits is no longer available in the app store. This is a problem because I had paid money for an app and now no longer have a way of accessing it. So the solution is to create my own habit tracking app, one that better suits what I would like to see in such an app. To possibly negate what happened to the app I was using, I would creat the ability to store the data in the cloud and be able to export the data in an appropriate format for use in other settings, so that if one day I decide to abandon the app, people will have the ability to export their data.
+The app should allow users to mark habits as done and ways to track their progress with metrics and graphs, but also have features not commonly found incorporated in the app such as a pomodoro timer that can automatically add the elapsed time to the metrics.
+I have also yet to find apps that appropriately measure bad habit cessation within the same app that tracks habit formation. So for example suppose I want to limit social media use and measure it. Most apps will only be able to do that by creating a habit titled say “spent less than 30 minutes on social media” and then mark it as a success or failure, but not how much. The app I hope to develop will be able to specify the success as being over or under a limit. So if I input only 15 minutes that day, it will be shown as a success for the day, whereas other habits will be able to be configured to be a success if the amount inputted is over a certain threshold, rather than under.
+This development project will be based on modules TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering).
+So this will be a development project, and the specification will evolve, and I hope to incorporate proper engineering and security practices and demonstrate them in the report.
+I saw a few mentions of British computer society accreditation and was wondering how that works and hope you could let me know if you think this project idea would meet their requirements.
+Due to the time difference, the best time for our meetings would be during UK morning hours. For our first meeting or call, 11:00 AM on April 7th (UK time) works well for me.
+I don’t think we’ll be able to call unless you use a platform like Signal. I’ve never used Teams before, but I suppose I could figure it out.
+I look forward to hearing from you soon. Have a great day!
+Answer:
+Certainly! Here's a revised version of your email with improved grammar, structure, and clarity:
+
+Subject: Project Discussion and Meeting Scheduling
+Good morning, Dr. Chapman,
+My name is Elijah Lazerman Robichaud, and I’m excited to receive your input on my project throughout the course.
+I currently reside in South Korea. While this isn’t my first idea for a project, it’s the one I’ve decided to pursue. My initial idea proved too legally complex, as researching and citing the relevant laws would have been challenging without fluency in Korean.
+Project Overview:
+ A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it.
+To address this issue, I aim to develop my own habit-tracking app, incorporating features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for storing data in the cloud and exporting it in a suitable format for use elsewhere. This way, if a user chooses to discontinue using the app, their data will still be accessible.
+Key features of the app include:
+Marking habits as completed and tracking progress through metrics and graphs.
+Incorporating unique functionalities such as a Pomodoro timer, which will automatically log elapsed time into the metrics.
+Enabling measurement of both habit formation and habit cessation.
+Most habit-tracking apps fail to adequately measure the cessation of negative habits within the same framework. For instance, if I want to limit my social media usage, existing apps require creating a habit like “Spent less than 30 minutes on social media” and marking it as a success or failure. However, they don’t allow users to track specific durations. My app will let users input exact values (e.g., 15 minutes) and assess success based on whether the value is under or over a set threshold.
+This development project will draw upon concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve over time, and I plan to incorporate proper engineering and security practices, which I will document in the report.
+I noticed mentions of British Computer Society accreditation and would appreciate any insights on how it works. Do you think this project would meet their requirements?
+Regarding meeting times, the time difference means mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient.
+I’m unsure if you use platforms like Signal for calls. While I’ve never used Teams before, I’m willing to learn if necessary.
+I look forward to hearing from you soon. Have a great day!
+Best regards,
+ Elijah Lazerman Robichaud
+
+This polished version maintains your original tone while improving clarity and professionalism. Let me know if you'd like to make any further tweaks!
+Prompt:
+rewrite the part about the over under. make sure to note that the user will have the option to configure each habit to be successful over a thresholed, and others can be success if under a threshold. Mention that the app wont be just for one type of habit, but will incorporate many different types
+
+Answer:
+Certainly! Here's the revised section with your requested changes:
+
+Most habit-tracking apps struggle to effectively measure the cessation of negative habits within the same platform that tracks positive habit formation. For example, if I want to limit social media usage, many apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure without recording the specific duration.
+My app will address this by allowing users to configure each habit individually. Some habits can be set to track success when a value exceeds a specified threshold (e.g., exercising for over 30 minutes), while others can track success if the value falls below a threshold (e.g., using social media for under 30 minutes). This flexibility ensures the app accommodates a wide variety of habits—not just one type—making it suitable for users looking to manage different aspects of their routines, from forming new habits to reducing or eliminating undesired behaviors.
+
+I hope this version reflects your vision better! Let me know if there’s anything more you’d like adjusted.
+
+Prompt:
+mention that doing so will allow for tracking progress graphically
+Answer:
+Here's the updated section with your addition about tracking progress graphically:
+
+Most habit-tracking apps struggle to effectively measure the cessation of negative habits within the same platform that tracks positive habit formation. For example, if I want to limit social media usage, many apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure without recording the specific duration.
+My app will address this limitation by allowing users to configure each habit individually. Some habits can be set to track success when a value exceeds a specified threshold (e.g., exercising for over 30 minutes), while others can track success if the value falls below a threshold (e.g., using social media for under 30 minutes). This flexibility ensures the app accommodates a wide variety of habits—not just one type—making it suitable for managing different aspects of users’ routines, from forming new habits to reducing undesired behaviors.
+Additionally, the app will provide graphical tracking of progress for each habit, offering users a clear and visual representation of their achievements and patterns over time. This feature will help users stay motivated and gain deeper insights into their behavior.
+
+Let me know if there's anything else you'd like adjusted!
+
+Prompt:
+fix this up: Subject: Project Discussion and Meeting Scheduling Good morning, Dr. Chapman, My name is Elijah Lazerman Robichaud, and I’m excited to receive your input on my project throughout the course. I currently reside in South Korea. While this isn’t my first idea for a project, it’s the one I’ve decided to pursue. My initial idea proved too legally complex, as researching and citing the relevant laws would have been challenging without fluency in Korean. Project Overview: A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it. To address this issue, I aim to develop my own habit-tracking app, incorporating features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for storing data in the cloud and exporting it in a suitable format for use elsewhere. This way, if a user chooses to discontinue using the app, their data will still be accessible. Key features of the app include:
+Most habit-tracking apps struggle to effectively measure the cessation of negative habits within the same platform that tracks positive habit formation. For example, if I want to limit social media usage, many apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure without recording the specific duration. My app will address this limitation by allowing users to configure each habit individually. Some habits can be set to track success when a value exceeds a specified threshold (e.g., exercising for over 30 minutes), while others can track success if the value falls below a threshold (e.g., using social media for under 30 minutes). This flexibility ensures the app accommodates a wide variety of habits—not just one type—making it suitable for managing different aspects of users’ routines, from forming new habits to reducing undesired behaviors. Additionally, the app will provide graphical tracking of progress for each habit, offering users a clear and visual representation of their achievements and patterns over time. This feature will help users stay motivated and gain deeper insights into their behavior.
+This development project will draw upon concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve over time, and I plan to incorporate proper engineering and security practices, which I will document in the report. I noticed mentions of British Computer Society accreditation and would appreciate any insights on how it works. Do you think this project would meet their requirements? Regarding meeting times, the time difference means mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient. I’m unsure if you use platforms like Signal for calls. While I’ve never used Teams before, I’m willing to learn if necessary. I look forward to hearing from you soon. Have a great day! Best regards, Elijah Lazerman Robichaud
+
+Answer:
+Here’s a polished version of your email:
+
+Subject: Project Discussion and Meeting Scheduling
+Good morning, Dr. Chapman,
+My name is Elijah Lazerman Robichaud, and I’m excited to work with you and receive your input on my project throughout the course.
+I currently reside in South Korea. While this isn’t my first idea for a project, it’s the one I’ve decided to pursue. My initial idea proved too legally complex, as researching and citing the relevant laws would have been challenging without fluency in Korean.
+Project Overview:
+ A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it.
+To address this issue, I aim to develop my own habit-tracking app, incorporating features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for storing data in the cloud and exporting it in a suitable format for use elsewhere. This ensures that users can access their data even if they decide to stop using the app.
+Key Features:
+ Most habit-tracking apps struggle to measure the cessation of negative habits effectively while simultaneously tracking positive habit formation. For example, if I want to limit social media usage, many apps only allow me to create a habit like “Spent less than 30 minutes on social media,” and mark it as a binary success or failure without recording the specific duration.
+My app addresses this limitation by allowing users to configure each habit individually. Users can set some habits to track success when a value exceeds a specific threshold (e.g., exercising for over 30 minutes) and others to track success when the value falls below a threshold (e.g., using social media for under 30 minutes). This flexibility accommodates a wide range of habit types—not just one—making it suitable for managing various aspects of daily routines.
+Additionally, the app will provide graphical tracking of progress for each habit, offering users a clear and visual representation of their achievements and patterns over time. This feature is designed to help users stay motivated and gain deeper insights into their behavior.
+This development project will draw upon concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve over time, and I plan to incorporate proper engineering and security practices, which I will document in the report.
+I noticed mentions of British Computer Society accreditation and would appreciate any insights on how it works. Do you think this project would meet their requirements?
+Meeting Schedule:
+ Due to the time difference, mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient.
+I’m unsure if you use platforms like Signal for calls. While I’ve never used Teams before, I’m willing to learn if necessary.
+I look forward to hearing from you soon. Have a great day!
+Best regards,
+ Elijah Lazerman Robichaud
+
+This version improves the structure and tone, ensuring clarity and professionalism. Let me know if there’s anything you’d like tweaked further!
+
+Prompt:
+fix this up: I’m unsure how a call would work long distance unless you use platforms like Signal (which i use) for calls. While I’ve never used Teams before, I’m willing to learn if necessary.
+Answer:
+Certainly! Here's a refined version:
+"I'm unsure how a long-distance call would work unless you use a platform like Signal, which I already use for calls. While I’ve never used Teams before, I’m willing to learn if that’s your preferred option."
+Let me know if you'd like further adjustments!
+
+Prompt:
+fix this up: Subject: Project Discussion and Meeting Scheduling Good morning, Dr. Chapman, My name is Elijah Lazerman Robichaud, and I’m excited to work with you and receive your input on my project throughout the course. I currently reside in South Korea. While this isn’t my first idea for a project, it’s the one I’ve decided to pursue. My initial idea proved too legally complex, as researching and citing the relevant laws would have been challenging without fluency in Korean.
+Problem: A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it. To address this issue, I aim to develop my own habit-tracking app, incorporating features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for storing data in the cloud and exporting it in a suitable format for use elsewhere. This ensures that users can access their data even if they decide to stop using the app.
+The solution should achieve: Most habit-tracking apps struggle to measure the cessation of negative habits effectively while simultaneously tracking positive habit formation. For example, if I want to limit social media usage, many apps only allow me to create a habit like “Spent less than 30 minutes on social media,” and mark it as a binary success or failure without recording the specific duration. My app addresses this limitation by allowing users to configure each habit individually. Users can set some habits to track success when a value exceeds a specific threshold (e.g., exercising for over 30 minutes) and others to track success when the value falls below a threshold (e.g., using social media for under 30 minutes). This flexibility accommodates a wide range of habit types—not just one—making it suitable for managing various aspects of daily routines. Additionally, the app will provide graphical tracking of progress for each habit, offering users a clear and visual representation of their achievements and patterns over time. This feature is designed to help users stay motivated and gain deeper insights into their behavior. This development project will draw upon concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve over time, and I plan to incorporate proper engineering and security practices, which I will document in the report. I noticed mentions of British Computer Society (BCS) accreditation and would appreciate any insights on how it works. Do you think this project would meet their requirements?
+Meeting Schedule: Due to the time difference, mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient. I'm unsure how a long-distance call would work unless you use a platform like Signal, which I already use for calls. While I’ve never used Teams before, I’m willing to learn if that’s your preferred option. I look forward to hearing from you soon. Have a great day! Best regards, Elijah Lazerman Robichaud
+
+Answer:
+Here’s an improved and polished version of your email:
+
+Subject: Project Discussion and Meeting Scheduling
+Good morning, Dr. Chapman,
+My name is Elijah Lazerman Robichaud, and I’m excited to collaborate with you and receive your guidance on my project throughout the course.
+I currently reside in South Korea. While this isn’t my first idea for a project, it is the one I’ve chosen to pursue. My initial idea turned out to be too legally complex, as researching and citing the relevant laws would have been difficult without fluency in Korean.
+Problem:
+ A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it.
+To address this issue, I aim to develop my own habit-tracking app, incorporating features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for cloud storage and exporting data in a suitable format for use elsewhere. This will ensure users can access their data even if they decide to stop using the app.
+Proposed Solution:
+ Many existing habit-tracking apps struggle to effectively measure the cessation of negative habits alongside the formation of positive ones. For instance, if I want to limit my social media usage, most apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure, without logging the specific duration.
+My app will address this limitation by enabling users to configure habits individually. Some habits can be set to track success when a value exceeds a specific threshold (e.g., exercising for over 30 minutes), while others can track success when a value falls below a threshold (e.g., social media usage under 30 minutes). This flexibility will make the app suitable for managing a wide variety of habits—not just one type.
+Additionally, the app will feature graphical tracking of progress for each habit, offering users a clear, visual representation of their achievements and patterns over time. This functionality is designed to help users stay motivated and gain deeper insights into their habits and behavior.
+This development project will incorporate concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve throughout its development, and I plan to demonstrate proper engineering and security practices, documenting them thoroughly in the project report.
+I’ve also noticed mentions of British Computer Society (BCS) accreditation and would appreciate any insights into how it works. Do you think this project would meet their requirements?
+Meeting Schedule:
+ Given the time difference, mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient.
+I’m unsure how a long-distance call would work unless you use a platform like Signal, which I currently use for calls. While I’ve never used Teams before, I’m happy to learn if that’s your preferred option.
+I look forward to hearing from you soon. Have a great day!
+Best regards,
+ Elijah Lazerman Robichaud
+
+This version is polished, concise, and maintains a professional tone. Let me know if there are any additional changes you’d like!
+
+Prompt:
+fix: Users would then also be able to effectively measure how far they are from the benchmark they set for themselves, rather then relying a binary success or failure. This flexibility will make the app suitable for managing a wide variety of habits—not just one type.
+
+Answer:
+Here's the improved version:
+"Users would also be able to accurately assess how far they are from the benchmarks they’ve set for themselves, rather than relying solely on a binary success or failure. This added flexibility makes the app suitable for managing a diverse range of habits, catering to both positive habit formation and the cessation of negative behaviors."
+Let me know if you'd like further refinements!
+
+Prompt:
+fix: Users would then also be able to effectively measure how far they are from the benchmark they set for themselves in either direction, rather then relying a binary success or failure.
+Answer:
+Here’s the improved version:
+"Users would also be able to effectively measure how far they are from the benchmarks they’ve set for themselves in either direction, rather than relying solely on a binary success or failure. This approach adds nuance to habit tracking, making it more adaptable to individual goals."
+Let me know if you'd like further refinements!
+
+Prompt:
+fix this up: Subject: Project Discussion and Meeting Scheduling Good morning, Dr. Chapman, My name is Elijah Lazerman Robichaud, and I’m excited to collaborate with you and receive your guidance on my project throughout the course. I currently reside in South Korea. While this isn’t my first idea for a project, it is the one I’ve chosen to pursue. My initial idea turned out to be too legally complex, as researching and citing the relevant laws would have been difficult without fluency in Korean.
+Problem: A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it.
+Proposed Solution: To address this issue, I aim to develop my own habit-tracking app, incorporating features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for cloud storage and exporting data in a suitable format for use elsewhere. This will ensure users can access their data even if they decide to stop using the app. Many existing habit-tracking apps struggle to effectively measure the cessation of negative habits alongside the formation of positive ones. For instance, if I want to limit my social media usage, most apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure, without logging the specific duration. My app will address this limitation by enabling users to configure habits individually. Some habits can be set to track success when a value exceeds a specific threshold (e.g., exercising for over 30 minutes), while others can track success when a value falls below a threshold (e.g., social media usage under 30 minutes). Users would also be able to effectively measure how far they are from the benchmarks they’ve set for themselves in either direction, rather than relying solely on a binary success or failure. This approach adds nuance to habit tracking, making it more adaptable to individual goals. This flexibility will make the app suitable for managing a wide variety of habits—not just one type. Additionally, the app will feature graphical tracking of progress for each habit, offering users a clear, visual representation of their achievements and patterns over time. This functionality is designed to help users stay motivated and gain deeper insights into their habits and behavior.
+This is a development project which will incorporate concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve throughout its development, and I plan to demonstrate proper engineering and security practices, documenting them thoroughly in the project report.
+Meeting Schedule: Given the time difference, mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient. I’m unsure how a long-distance call would work unless you use a platform like Signal, which I currently use for calls. While I’ve never used Teams before, I’m happy to learn if that’s your preferred option.
+Separate concerns: I’ve noticed mentions of British Computer Society (BCS) accreditation and would appreciate any insights into how it works. Do you think this project would meet their requirements? I was also hoping to get some more guidelines on the use of Gen AI in this scenario. How would I need to cite its use if I am using it to brainstorm or as a coding assistant. Any guidance would help I look forward to hearing from you soon. Have a great day! Best regards, Elijah Lazerman Robichaud
+
+Answer:
+Here’s a refined and polished version of your email:
+
+Subject: Project Discussion and Meeting Scheduling
+Good morning, Dr. Chapman,
+My name is Elijah Lazerman Robichaud, and I’m excited to collaborate with you and receive your guidance on my project throughout the course.
+I currently reside in South Korea. While this isn’t my first idea for a project, it is the one I’ve chosen to pursue. My initial idea turned out to be too legally complex, as researching and citing the relevant laws would have been challenging without fluency in Korean.
+Problem:
+ A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it.
+Proposed Solution:
+ To address this issue, I aim to develop my own habit-tracking app, incorporating features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for cloud storage and exporting data in a suitable format for use elsewhere. This will ensure users can access their data even if they decide to stop using the app.
+Many existing habit-tracking apps struggle to measure the cessation of negative habits effectively while also tracking the formation of positive ones. For instance, if I want to limit my social media usage, most apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure, without recording the specific duration.
+My app will address this limitation by enabling users to configure habits individually. Some habits can be set to track success when a value exceeds a specific threshold (e.g., exercising for over 30 minutes), while others can track success when a value falls below a threshold (e.g., social media usage under 30 minutes). Users will also be able to measure how far they are from the benchmarks they’ve set for themselves in either direction, rather than relying solely on binary success or failure. This approach adds nuance to habit tracking, making it more adaptable to individual goals.
+This flexibility will make the app suitable for managing a wide variety of habits—not just one type. Additionally, the app will feature graphical tracking of progress for each habit, offering users a clear, visual representation of their achievements and patterns over time. This functionality is designed to help users stay motivated and gain deeper insights into their habits and behavior.
+This is a development project that will incorporate concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve throughout its development, and I plan to demonstrate proper engineering and security practices, documenting them thoroughly in the project report.
+Meeting Schedule:
+ Given the time difference, mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient.
+I’m unsure how a long-distance call would work unless you use a platform like Signal, which I currently use for calls. While I’ve never used Teams before, I’m happy to learn if that’s your preferred option.
+Separate Concerns:
+ I’ve noticed mentions of British Computer Society (BCS) accreditation and would appreciate any insights into how it works. Do you think this project would meet their requirements?
+Additionally, I would appreciate some guidance on the use of generative AI in this context. If I use it for brainstorming or as a coding assistant, how should I properly cite its use? Any advice would be greatly appreciated.
+I look forward to hearing from you soon. Have a great day!
+Best regards,
+ Elijah Lazerman Robichaud
+
+Let me know if there are any further adjustments or additions you'd like!
+
+Prompt:
+fix this: Subject: Project Discussion and Meeting Scheduling Good morning, Dr. Chapman, My name is Elijah Lazerman Robichaud, and I’m excited to collaborate with you and receive your guidance on my project throughout the course. I currently reside in South Korea. While this isn’t my first idea for a project, it is the one I’ve chosen to pursue. My initial idea turned out to be too legally complex, as researching and citing the relevant laws would have been difficult without fluency in Korean.
+Problem: A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it. Many existing habit-tracking apps struggle to effectively measure the cessation of negative habits alongside the formation of positive ones. For instance, if I want to limit my social media usage, most apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure, without logging the specific duration.
+Proposed Solution: To address this issue, I aim to develop my own habit-tracking app, incorporating features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for cloud storage and exporting data in a suitable format for use elsewhere. This will ensure users can access their data even if they decide to stop using the app. My app will address this limitation by enabling users to configure habits individually. Some habits can be set to track success when a value exceeds a specific threshold (e.g., exercising for over 30 minutes), while others can track success when a value falls below a threshold (e.g., social media usage under 30 minutes). Users would also be able to effectively measure how far they are from the benchmarks they’ve set for themselves in either direction, rather than relying solely on a binary success or failure. This approach adds nuance to habit tracking, making it more adaptable to individual goals. This flexibility will make the app suitable for managing a wide variety of habits—not just one type. Additionally, the app will feature graphical tracking of progress for each habit, offering users a clear, visual representation of their achievements and patterns over time. This functionality is designed to help users stay motivated and gain deeper insights into their habits and behavior.
+This is a development project which will incorporate concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve throughout its development, and I plan to demonstrate proper engineering and security practices, documenting them thoroughly in the project report.
+Meeting Schedule: Given the time difference, mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient. I’m unsure how a long-distance call would work unless you use a platform like Signal, which I currently use for calls. While I’ve never used Teams before, I’m happy to learn if that’s your preferred option.
+Separate concerns: I’ve noticed mentions of British Computer Society (BCS) accreditation and would appreciate any insights into how it works. Do you think this project would meet their requirements? I was also hoping to get some more guidelines on the use of Gen AI in this scenario. How would I need to cite its use if I am using it to brainstorm or as a coding assistant. Any guidance would help I look forward to hearing from you soon. Have a great day! Best regards, Elijah Lazerman Robichaud
+
+Answer:
+Here’s a revised and polished version of your email:
+
+Subject: Project Discussion and Meeting Scheduling
+Good morning, Dr. Chapman,
+My name is Elijah Lazerman Robichaud, and I’m thrilled to collaborate with you and receive your guidance on my project throughout the course.
+I currently reside in South Korea. While this isn’t my first idea for a project, it is the one I’ve chosen to pursue. My initial idea turned out to be too legally complex, as researching and citing the relevant laws would have been challenging without fluency in Korean.
+Problem:
+ A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it.
+Many existing habit-tracking apps also fail to effectively measure the cessation of negative habits alongside the formation of positive ones. For instance, if I want to limit my social media usage, most apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure, without logging the specific duration.
+Proposed Solution:
+ To address this issue, I aim to develop my own habit-tracking app with features that better align with my preferences. To prevent the problem I encountered, the app will include options for cloud storage and exporting data in a suitable format for use elsewhere. This will ensure users can access their data even if they decide to stop using the app.
+My app will address the limitations of existing habit-tracking apps by enabling users to configure habits individually. Some habits can be set to track success when a value exceeds a specific threshold (e.g., exercising for over 30 minutes), while others can track success when a value falls below a threshold (e.g., social media usage under 30 minutes). Users will also be able to measure how far they are from the benchmarks they’ve set for themselves in either direction, rather than relying solely on binary success or failure. This added flexibility introduces nuance to habit tracking, making it more adaptable to individual goals.
+This approach will make the app suitable for managing a wide variety of habits—not just one type. Additionally, the app will feature graphical tracking of progress for each habit, providing users with a clear, visual representation of their achievements and patterns over time. This functionality is designed to help users stay motivated and gain deeper insights into their habits and behaviors.
+This project will incorporate concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve throughout its development, and I plan to demonstrate proper engineering and security practices, documenting them thoroughly in the project report.
+Meeting Schedule:
+ Given the time difference, mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient.
+I’m unsure how a long-distance call would work unless you use a platform like Signal, which I currently use for calls. While I’ve never used Teams before, I’m happy to learn if that’s your preferred option.
+Additional Questions:
+ I’ve noticed mentions of British Computer Society (BCS) accreditation and would appreciate any insights into how it works. Do you think this project would meet their requirements?
+I’d also like to ask about the use of generative AI in this scenario. If I use it for brainstorming or as a coding assistant, how should I properly cite its use? Any guidance on this would be greatly appreciated.
+I look forward to hearing from you soon. Have a great day!
+Best regards,
+ Elijah Lazerman Robichaud
+
+This version ensures professional tone and clarity while maintaining the structure of your original message. Let me know if any further refinements are needed!
+
+Prompt:
+fix this: Subject: Project Discussion and Meeting Scheduling Good morning, Dr. Chapman, My name is Elijah Lazerman Robichaud, and I’m looking forward to receive your guidance on my project throughout the course. I currently reside in South Korea. While the following isn’t my first idea for a project, it is the one I’ve chosen to pursue. My initial idea was an app to help facilitate my wife's English teaching business for kids, but upon further thought it seemed to be too complex a task, as researching and citing the relevant laws would have been difficult without fluency in Korean.
+I tried to follow your format but upon review, forgive me for it does not follow it to a t.
+A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it.
+To address this issue, I aim to develop my own habit-tracking app, incorporating features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for cloud storage and exporting data in a suitable format for use elsewhere. This will ensure users can access their data even if they decide to stop using the app. Many existing habit-tracking apps struggle to effectively measure the cessation of negative habits alongside the formation of positive ones. For instance, if I want to limit my social media usage, most apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure, without logging the specific duration. My app will address this limitation by enabling users to configure habits individually. Some habits can be set to track success when a value exceeds a specific threshold (e.g., exercising for over 30 minutes), while others can track success when a value falls below a threshold (e.g., social media usage under 30 minutes). Users would also be able to effectively measure how far they are from the benchmarks they’ve set for themselves in either direction, rather than relying solely on a binary success or failure. This approach adds nuance to habit tracking, making it more adaptable to individual goals. This flexibility will make the app suitable for managing a wide variety of habits—not just one type. Additionally, the app will feature graphical tracking of progress for each habit, offering users a clear, visual representation of their achievements and patterns over time. This functionality is designed to help users stay motivated and gain deeper insights into their habits and behavior.
+This is a development project which will incorporate concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve throughout its development, and I plan to demonstrate proper engineering and security practices, documenting them thoroughly in the project report.
+Meeting Schedule: Given the time difference, mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient. I’m unsure how a long-distance call would work unless you use a platform like Signal, which I currently use for calls. While I’ve never used Teams before, I’m happy to learn if that’s your preferred option.
+Separate concerns: I’ve noticed mentions of British Computer Society (BCS) accreditation and would appreciate any insights into how it works. Do you think this project would meet their requirements? I was also hoping to get some more guidelines on the use of Gen AI in this scenario. How would I need to cite its use if I am using it to brainstorm or as a coding assistant. Any guidance would help I look forward to hearing from you soon. Have a great day! Best regards, Elijah Lazerman Robichaud
+
+Answer:
+Here’s the refined version of your email with improved phrasing, flow, and grammar:
+
+Subject: Project Discussion and Meeting Scheduling
+Good morning, Dr. Chapman,
+My name is Elijah Lazerman Robichaud, and I’m looking forward to receiving your guidance on my project throughout the course.
+I currently reside in South Korea. While the following isn’t my first idea for a project, it is the one I’ve decided to pursue. Initially, I considered developing an app to facilitate my wife's English teaching business for children, but upon further reflection, I realized the task was too complex. Researching and citing the relevant laws would have been challenging without fluency in Korean.
+I tried to follow your format, but upon review, I apologize—it does not follow it perfectly.
+Problem:
+ A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it.
+Many existing habit-tracking apps also fail to effectively measure the cessation of negative habits alongside the formation of positive ones. For instance, if I want to limit my social media usage, most apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure, without logging the specific duration.
+Proposed Solution:
+ To address this issue, I aim to develop my own habit-tracking app with features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for cloud storage and exporting data in a suitable format for use elsewhere. This ensures that users can access their data even if they decide to stop using the app.
+My app will address the limitations of existing habit-tracking apps by enabling users to configure habits individually. Some habits can be set to track success when a value exceeds a specific threshold (e.g., exercising for over 30 minutes), while others can track success when a value falls below a threshold (e.g., social media usage under 30 minutes). Users will also be able to measure how far they are from the benchmarks they’ve set for themselves in either direction, rather than relying solely on binary success or failure. This added flexibility introduces nuance to habit tracking, making it more adaptable to individual goals.
+This approach will make the app suitable for managing a wide variety of habits—not just one type. Additionally, the app will feature graphical tracking of progress for each habit, providing users with a clear, visual representation of their achievements and patterns over time. This functionality is designed to help users stay motivated and gain deeper insights into their habits and behavior.
+This project will incorporate concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve throughout its development, and I plan to demonstrate proper engineering and security practices, documenting them thoroughly in the project report.
+Meeting Schedule:
+ Given the time difference, mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient.
+I’m unsure how a long-distance call would work unless you use a platform like Signal, which I currently use for calls. While I’ve never used Teams before, I’m happy to learn if that’s your preferred option.
+Separate Concerns:
+ I’ve noticed mentions of British Computer Society (BCS) accreditation and would appreciate any insights into how it works. Do you think this project would meet their requirements?
+Additionally, I’d like some guidance on using generative AI in this scenario. If I use it for brainstorming or as a coding assistant, how should I properly cite its use? Any advice on this would be greatly appreciated.
+I look forward to hearing from you soon. Have a great day!
+Best regards,
+ Elijah Lazerman Robichaud
+
+This version improves clarity, professionalism, and flow while retaining your original tone. Let me know if you’d like further tweaks!
+
+Prompt:
+fix:
+Answer:
+It seems like you might want some assistance refining or improving something, but your message is incomplete. Could you clarify what you'd like me to fix? Whether it's text, grammar, or structure, I'm here to help!
+
+Prompt:
+fix: There are also various different apps for specific features but none I have yet to encounter that integrate them into one app. So for example an app that has a timer within the habit tracking app that could add the time elapsed to the habit
+Answer:
+Here’s the improved version:
+"There are numerous apps that offer specific features, but I have yet to encounter one that integrates these features into a single app. For instance, an app with a built-in timer within the habit-tracking system that automatically logs the elapsed time as part of the tracked habit."
+Let me know if you'd like further refinements!
+
+Prompt:
+fix: Subject: Project Discussion and Meeting Scheduling Good morning, Dr. Chapman, My name is Elijah Lazerman Robichaud, and I’m looking forward to receiving your guidance on my project throughout the course. I currently reside in South Korea. While the following isn’t my first idea for a project, it is the one I’ve decided to pursue. Initially, I considered developing an app to facilitate my wife's English teaching business for children, but upon further reflection, I realized the task was too complex. Researching and citing the relevant laws would have been challenging without fluency in Korean. I tried to follow your format, but upon review, I apologize—it does not follow it perfectly. Problem: A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it. Many existing habit-tracking apps also fail to effectively measure the cessation of negative habits alongside the formation of positive ones. For instance, if I want to limit my social media usage, most apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure, without logging the specific duration. In addition, there are numerous apps that offer specific features, but I have yet to encounter one that integrates these features into a single app. For instance, an app with a built-in timer within the habit-tracking system that automatically logs the elapsed time as part of the tracked habit. Proposed Solution: To address this issue, I aim to develop my own habit-tracking app with features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for cloud storage and exporting data in a suitable format for use elsewhere. This ensures that users can access their data even if they decide to stop using the app. My app will address the limitations of existing habit-tracking apps by enabling users to configure habits individually. Some habits can be set to track success when a value exceeds a specific threshold (e.g., exercising for over 30 minutes), while others can track success when a value falls below a threshold (e.g., social media usage under 30 minutes). Users will also be able to measure how far they are from the benchmarks they’ve set for themselves in either direction, rather than relying solely on binary success or failure. This added flexibility introduces nuance to habit tracking, making it more adaptable to individual goals. This approach will make the app suitable for managing a wide variety of habits—not just one type. Additionally, the app will feature graphical tracking of progress for each habit, providing users with a clear, visual representation of their achievements and patterns over time. This functionality is designed to help users stay motivated and gain deeper insights into their habits and behavior. Different habits will be abled to be configured so if time is being measured (such for studying) then a timer such as a pomodoro can be incorporated and have the time logged automatically This project will incorporate concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve throughout its development, and I plan to demonstrate proper engineering and security practices, documenting them thoroughly in the project report. Meeting Schedule: Given the time difference, mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient. I’m unsure how a long-distance call would work unless you use a platform like Signal, which I currently use for calls. While I’ve never used Teams before, I’m happy to learn if that’s your preferred option. Separate Concerns: I’ve noticed mentions of British Computer Society (BCS) accreditation and would appreciate any insights into how it works. Do you think this project would meet their requirements? Additionally, I’d like some guidance on using generative AI in this scenario. If I use it for brainstorming or as a coding assistant, how should I properly cite its use? Any advice on this would be greatly appreciated. I look forward to hearing from you soon. Have a great day! Best regards, Elijah Lazerman Robichaud
+
+Answer:
+Here’s the refined and polished version of your email:
+
+Subject: Project Discussion and Meeting Scheduling
+Good morning, Dr. Chapman,
+My name is Elijah Lazerman Robichaud, and I’m looking forward to receiving your guidance on my project throughout the course.
+I currently reside in South Korea. While the following isn’t my first idea for a project, it is the one I’ve decided to pursue. Initially, I considered developing an app to support my wife's English teaching business for children. However, after further reflection, I realized the task was too complex, as researching and citing the relevant laws would have been challenging without fluency in Korean.
+I attempted to follow your format, but upon review, I apologize—it may not adhere to it perfectly.
+Problem:
+ A few weeks ago, after factory resetting my phone, I discovered that a habit-tracking app I had purchased for $6 several years ago was no longer available in the app store. This was frustrating, as I had paid for the app and could no longer access it.
+Many existing habit-tracking apps also fail to effectively measure the cessation of negative habits alongside the formation of positive ones. For example, if I want to limit my social media usage, most apps only allow me to create a habit like “Spent less than 30 minutes on social media” and mark it as a binary success or failure, without logging the specific duration.
+Additionally, there are numerous apps that offer specific features, but I have yet to encounter one that integrates these features into a single app. For instance, an app with a built-in timer within the habit-tracking system that automatically logs the elapsed time as part of the tracked habit.
+Proposed Solution:
+ To address these issues, I aim to develop my own habit-tracking app with features that better align with my preferences. To prevent the kind of problem I encountered, the app will include options for cloud storage and exporting data in a suitable format for use elsewhere. This ensures that users can access their data even if they decide to stop using the app.
+My app will address the limitations of existing habit-tracking apps by allowing users to configure habits individually. Some habits can be set to track success when a value exceeds a specific threshold (e.g., exercising for over 30 minutes), while others can track success when a value falls below a threshold (e.g., social media usage under 30 minutes). Users will also be able to measure how far they are from the benchmarks they’ve set for themselves in either direction, rather than relying solely on binary success or failure. This added flexibility introduces nuance to habit tracking, making it more adaptable to individual goals.
+This approach will make the app suitable for managing a wide variety of habits—not just one type. Furthermore, the app will feature graphical tracking of progress for each habit, providing users with a clear, visual representation of their achievements and patterns over time. This functionality is designed to help users stay motivated and gain deeper insights into their habits and behavior.
+Additionally, different habits can be configured to measure time-based goals. For example, if studying is being tracked, a Pomodoro timer can be integrated into the app to log the time automatically.
+This project will incorporate concepts from TM352 (Web, Mobile, and Cloud Technologies) and TM354 (Software Engineering). The project specifications will evolve throughout its development, and I plan to demonstrate proper engineering and security practices, documenting them thoroughly in the project report.
+Meeting Schedule:
+ Given the time difference, mornings in the UK work best for me. For our first meeting or call, 11:00 AM on April 7th (UK time) is convenient.
+I’m unsure how a long-distance call would work unless you use a platform like Signal, which I currently use for calls. While I’ve never used Teams before, I’m happy to learn if that’s your preferred option.
+Separate Concerns:
+ I’ve noticed mentions of British Computer Society (BCS) accreditation and would appreciate any insights into how it works. Do you think this project would meet their requirements?
+Additionally, I’d like some guidance on using generative AI in this scenario. If I use it for brainstorming or as a coding assistant, how should I properly cite its use? Any advice on this would be greatly appreciated.
+I look forward to hearing from you soon. Have a great day!
+Best regards,
+ Elijah Lazerman Robichaud
+
+This version ensures clarity and professionalism while improving flow and addressing all key points. Let me know if there’s anything more you’d like adjusted!
